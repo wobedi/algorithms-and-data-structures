@@ -2,12 +2,15 @@
 
 class BinaryHeap:
     # currently only works for keys of ints
+    # currently only max binary heap, not min binary heap
     def __init__(self, keys=[]):
         self.keys = [None]
-        self.keys[1:] = sorted(keys, reverse=True)  # heapify
+        self.keys[1:] = keys
+        self.heapify()
 
     def change_key(self, i, key):
-        # check if i in range
+        if not 1 <= i <= self.size():
+            return Exception(f"index {i} is out of range [1,{self.size()}]")
         self.keys[i] = key
         i = self._swim(i)
         i = self._sink(i)
@@ -15,11 +18,32 @@ class BinaryHeap:
 
     def del_max(self):
         if self.is_empty():
-            return "Heap is empty"
+            return Exception("Error: Heap is empty")
         self._swap(1, self.size())
         val = self.keys.pop()
         self._sink(1)
         return val 
+
+    def heapify(self):
+        # in-place, bottom-up
+        # TODO needs testing
+        if self.size() <= 1:
+            return
+        i = self.size()  // 2  # first node from the end who has children
+        while i > 0:
+            self._sink(i)
+            i -= 1
+        return
+
+    def heap_sort(self):
+        # TODO move to array_sort module?
+        # TODO needs testing
+        i = self.size()
+        while i > 0:
+            self._swap(1, i)
+            self._sink(1)
+            i -= 1
+        return
 
     def insert(self, key):
         self.keys.append(key)
@@ -31,22 +55,31 @@ class BinaryHeap:
     def max(self):
         return self.keys[1] if self.keys[1] else None
 
+    def remove_key(self, i):
+        if not 1 <= i <= self.size():
+            return Exception(f"index {i} is out of range [1,{self.size()}]")
+        self._swap(i, self.size())
+        val = self.keys.pop()
+        self._swim(i)
+        self._sink(i)
+        return val
+
     def size(self):
         return len(self.keys) - 1  # bc keys[0] is empty
 
     def _sink(self, i):
-        child1 = self.keys[i*2] if i*2 <= self.size() else None 
-        child2 = self.keys[i*2+1] if i*2+1 <= self.size() else None
-        if not child1 and not child2:
-            return i
-        elif child1 <= self.keys[i] and child2 <= self.keys[i]:
-            return i
-        elif child2 is None or child1 >= child2:
-            self._swap(i, i*2)
-            return self._sink(i*2)
-        elif child1 is None or child1 < child2:
-            self._swap(i, i*2+1)
-            return self._sink(i*2+1)
+        while 2*i <= self.size():
+            j = 2*i
+            if j < self.size() and self.keys[j] < self.keys[j+1]:
+                j += 1  # ensures that j is index of *larger* child node
+            if self.keys[i] >= self.keys[j]:
+                break
+            self._swap(i, j)
+            i = j
+        return i
+
+    def _swap(self, i1, i2):
+        self.keys[i1], self.keys[i2] = self.keys[i2], self.keys[i1]
 
     def _swim(self, i):
         parent_i = max(1, i // 2)  # parent = i//2 except for keys[1]
@@ -55,9 +88,6 @@ class BinaryHeap:
         else:
             self._swap(parent_i, i)
             return self._swim(parent_i)
-
-    def _swap(self, i1, i2):
-        self.keys[i1], self.keys[i2] = self.keys[i2], self.keys[i1]
 
 
 class Stack_Array:
