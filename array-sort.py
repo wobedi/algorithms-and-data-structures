@@ -6,6 +6,7 @@ from time import perf_counter
 # TODO: Implement proper testing
 # TODO: Github
 # test
+# test2
 
 def selection_sort(arr):
     for i in range(0, len(arr)):

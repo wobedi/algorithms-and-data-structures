@@ -1,5 +1,6 @@
 from random import sample
 # test
+# test 2
 
 class ArraySearch():
     def __init__(self, array_sorted):
