@@ -1,3 +1,55 @@
+class BinaryHeap:
+    def __init__(self, keys=[]):
+        self.keys = []
+        self.keys[1:] = sorted(keys reverse=True)  # heapify
+
+    def change_key(self, i, key):
+        self.keys[i] = key
+        i = self._swim(i)
+        i = self._sink(i)
+        return i
+
+    def del_max(self):
+        self._swap(1, self.size())
+        self._sink(1)
+        return self.keys.pop()
+
+    def insert(self, key):
+        self.keys.append(key)
+        return self._swim(self.size())
+
+    def is_empty(self):
+        return len(self.keys) <= 1  # bc keys[0] is empty
+
+    def max(self):
+        return self.keys[1]
+
+    def size(self):
+        return len(self.keys) - 1  # bc keys[0] is empty
+
+    def _sink(self, i):
+        child1, child2 = self.keys[i*2], self.keys[i*2+1]
+        if child1 <= self.keys[i] and child2 <= self.keys[i]:
+            return i
+        elif child1 >= child2:
+            self._swap(i, i*2)
+            return self._sink(i*2)
+        elif child1 < child2:
+            self._swap(i, i*2+1)
+            return self._sink(i*2+1)
+
+    def _swim(self, i):
+        parent_i = max(1, i // 2)  # parent = i//2 except for keys[1]
+        if self.keys[parent_i] >= self.keys[i]:
+            return i
+        else:
+            self._swap(parent_i, i)
+            return self._swim(parent_i)
+
+    def _swap(self, i2, i2):
+        self.keys[i1], self.keys[i2] = self.keys[i2], self.keys[i1]
+
+
 class Stack_Array:
     def __init__(self):
         self.a = []
