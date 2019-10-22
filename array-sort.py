@@ -5,7 +5,7 @@ from time import perf_counter
 # fix function order in a way that make sense
 # TODO: Implement proper testing
 # TODO: Github
-
+# test
 
 def selection_sort(arr):
     for i in range(0, len(arr)):
