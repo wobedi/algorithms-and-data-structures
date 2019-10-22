@@ -42,7 +42,7 @@ def knuth_3xplus1_sequence(arr_len):
         x = 3*x + 1
 
 
-class MergeSort():
+class MergeSort:
     def __str__(self):
         return "MergeSort"
 
@@ -82,7 +82,7 @@ class MergeSort():
         return res
 
 
-class QuickSort():
+class QuickSort:
     def __str__(self):
         return "QuickSort"
 

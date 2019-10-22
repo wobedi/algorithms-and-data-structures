@@ -1,3 +1,5 @@
+#test1
+
 class BinaryHeap:
     def __init__(self, keys=[]):
         self.keys = []
@@ -113,6 +115,7 @@ def client():
             print("Error, please choose push or pop")
 
             # test 2
+            # test 3
 
 if __name__ == '__main__':
     client()   
