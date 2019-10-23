@@ -89,6 +89,60 @@ class BinaryHeap:
             self._swap(parent_i, i)
             return self._swim(parent_i)
 
+class BinarySearchTree:    
+    def __init__(self):
+        self.root = self._Node()
+    
+    class _Node:
+        def __init__(self, key=None, value=None, left=None, right=None):
+            self.key, self.value, self.left, self.right = key, value, left, right
+
+    def put(self, key, value):
+        if self.root.key == None:
+            self.root.key, self.root.value = key, value  # more elegant way?
+            return f"Put {key}:{value} at root"
+        return self._put(self.root, key, value)
+
+    def _put(self, node, key, value):
+        if node.key == key:
+            node.value == value
+            return f"Put {value} to existing key {key}"
+        if node.key > key:
+            if node.left is None:
+                node.left = self._Node(key, value)
+                return f"Created new node with {key}:{value} left of {node.key}"
+            else:
+                return self._put(node.left, key, value)
+        if node.key < key:
+            if node.right is None:
+                node.right = self._Node(key, value)
+                return f"Created new node with {key}:{value} right of {node.key}"
+            else:
+                return self._put(node.right, key, value)
+
+    def get(self, key):
+            return self._get(parent=None, node=self.root, key)
+
+    def _get(self, parent, node, key):
+        if node.key == key:
+            print(f"Found key {key} with value {node.value} and parent {parent.key}")
+            return node, parent
+        elif node.key > key:
+            if node.left is None:
+                return f"Did not find any value for key {key}"
+            else:
+                return self._get(parent=node, node=node.left, key)
+        elif node.key < key:
+            if node.right is None:
+                return f"Did not find any value for key {key}"
+            else:
+                return self._get(parent=node, node=node.right, key)
+
+    def delete(self, key):
+        pass
+
+    def iterator(self):
+        pass
 
 class Stack_Array:
     def __init__(self):
