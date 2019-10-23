@@ -91,52 +91,42 @@ class BinaryHeap:
 
 class BinarySearchTree:    
     def __init__(self):
-        self.root = self._Node()
+        self.root = None
+        self.upserted_node = None
     
     class _Node:
         def __init__(self, key=None, value=None, left=None, right=None):
             self.key, self.value, self.left, self.right = key, value, left, right
 
     def put(self, key, value):
-        if self.root.key == None:
-            self.root.key, self.root.value = key, value  # more elegant way?
-            return f"Put {key}:{value} at root"
-        return self._put(self.root, key, value)
+        self.root = self._put(self.root, key, value)
+        return self.upserted_node
 
     def _put(self, node, key, value):
-        if node.key == key:
-            node.value == value
-            return f"Put {value} to existing key {key}"
-        if node.key > key:
-            if node.left is None:
-                node.left = self._Node(key, value)
-                return f"Created new node with {key}:{value} left of {node.key}"
-            else:
-                return self._put(node.left, key, value)
-        if node.key < key:
-            if node.right is None:
-                node.right = self._Node(key, value)
-                return f"Created new node with {key}:{value} right of {node.key}"
-            else:
-                return self._put(node.right, key, value)
+        if node == None:
+            self.upserted_node = self._Node(key, value)
+            return self.upserted_node
+        elif key < node.key:
+            node.left = self._put(node.left, key, value)
+        elif key > node.key:
+            node.right = self._put(node.right, key, value)
+        elif node.key == key:
+            node.value = value
+            self.upserted_node = node
+        return node
 
     def get(self, key):
-            return self._get(parent=None, node=self.root, key)
-
-    def _get(self, parent, node, key):
-        if node.key == key:
-            print(f"Found key {key} with value {node.value} and parent {parent.key}")
-            return node, parent
-        elif node.key > key:
-            if node.left is None:
-                return f"Did not find any value for key {key}"
-            else:
-                return self._get(parent=node, node=node.left, key)
-        elif node.key < key:
-            if node.right is None:
-                return f"Did not find any value for key {key}"
-            else:
-                return self._get(parent=node, node=node.right, key)
+        x = self.root
+        while x is not None:
+            if x.key == key:
+                print(f"Found {key}:{x.value}")
+                return x.value
+            if x.key > key:
+                x = x.left
+            if x.key < key:
+                x = x.right
+        print(f"Could not find {key}")
+        return
 
     def delete(self, key):
         pass
@@ -207,4 +197,9 @@ def client():
             print("Error, please choose push or pop")
 
 if __name__ == '__main__':
-    pass
+    BST = BinarySearchTree()
+    print(BST.put(2,2))
+    print(BST.put(5,5))
+    print(BST.put(4,4))
+    print(BST.put(4,3))
+
