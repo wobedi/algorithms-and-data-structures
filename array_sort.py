@@ -4,10 +4,6 @@ from time import perf_counter
 # add explainer links for algos?
 # fix function order in a way that make sense
 # TODO: Implement proper testing
-# TODO: Github
-# test
-# test2
-# test3
 
 def selection_sort(arr):
     for i in range(0, len(arr)):
