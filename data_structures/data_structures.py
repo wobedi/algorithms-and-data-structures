@@ -95,7 +95,7 @@ class BinarySearchTree:
         self.upserted_node = None
 
     class Node:
-        def __init__(self, key, value=None, left=None, right=None):
+        def __init__(self, key, value, left=None, right=None):
             self.key, self.value, self.left, self.right = key, value, left, right
 
     def put(self, key, value):
@@ -202,6 +202,86 @@ class BinarySearchTree:
         queue.enqueue(node.key)
         self.traverse_inorder(node.right, queue)
 
+class RedBlackTree:
+    def __init__(self):
+        self.root = None
+
+    class Node:
+        def __init__(self, key, value, isRed, left=None, right=None):
+            self.key, self.value = key, value
+            self.left, self.right, self.isRed = left, right, isRed
+
+    def get(self, key):
+        node = self._get(self.root, key)
+        return node.value if node else False
+
+    def _get(self, node, key):
+        # TODO Same as vanilla BST. Inherit/Compose instead?
+        while node is not None:
+            if key == node.key:
+                return node
+            elif key < node.key:
+                node = node.left
+            elif key > node.key:
+                node = node.right
+        return False
+
+
+    def put(self, key, value):
+        self.root = self._put(self.root, key, value)
+        self.root.isRed = False  # is there a more elegant way?
+
+    def _put(self, node, key, value):
+        if node is None:
+            return self.Node(key, value, isRed=True)
+        elif key == node.key:
+            node.value = value
+        elif key < node.key:
+            node.left = self._put(node.left, key, value)
+        elif key > node.key:
+            node.right = self._put(node.right, key, value)
+        
+        if (node.right and node.right.isRed 
+                and (node.left is None or node.left.isRed == False)):
+            node = self._rotate_left(node)
+        if (node.left and node.left.left
+                and node.left.isRed and node.left.left.isRed):
+            node = self._rotate_right(node)
+        if (node.left and node.left.isRed
+                and node.right and node.right.isRed):
+            self._flip_colors(node)
+
+        return node
+
+    def delete(self, key):
+        # TODO
+        pass
+
+    def _rotate_left(self, parent):
+        assert parent.right.isRed == True
+        assert parent.left is None or parent.left.isRed == False
+        new_parent = parent.right
+        parent.right = new_parent.left
+        new_parent.left = parent
+        new_parent.isRed = parent.isRed
+        parent.isRed = True
+        return new_parent
+
+    def _rotate_right(self, parent):
+        assert parent.left.isRed == True
+        new_parent = parent.left
+        parent.left = new_parent.right
+        new_parent.right = parent
+        new_parent.isRed = parent.isRed
+        parent.isRed = True
+        return new_parent 
+
+    def _flip_colors(self, parent):
+        assert parent.left.isRed == parent.right.isRed == True
+        parent.left.isRed = parent.right.isRed = False
+        parent.isRed = True
+        return
+
 
 class Stack_Array:
     def __init__(self):
@@ -276,11 +356,9 @@ def client():
             print("Error, please choose push or pop")
 
 if __name__ == '__main__':
-    BST = BinarySearchTree()
+    BST = RedBlackTree()
     print(BST.put(1,1))
     print(BST.put(5,5))
     print(BST.put(3,3))
     print(BST.put(0.5,0.5))
     print(BST.put(2,2))
-    BST.delete(1)
-    BST.delete(5)
