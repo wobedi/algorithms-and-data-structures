@@ -1,5 +1,5 @@
 import random
-from .helpers import partition_in_place
+import src.algorithms_and_data_structures.helpers as helpers
 
 class ArraySearch:
     def binary_search_iterative(self, arr, key):
@@ -35,29 +35,32 @@ class ArraySearch:
         elif arr[mid] == key:
             return mid
 
-    def quick_select(self, arr, k):
-        """Returns kth-smallest item in sorted arr if arr is sorted
-        ascendingly and kth-largest item if arr is sorted descendingly
-        by implementing https://en.wikipedia.org/wiki/Quickselect
+    def quickselect(self, arr, k):
+        """Returns kth-smallest item in arr by implementing
+        https://en.wikipedia.org/wiki/Quickselect
         """
         k = int(k)
-        if k > len(arr):
-            return f"Error - k is {k} but array length is {len(arr)}"
+        if k > len(arr)-1 or k < 0:
+            raise ValueError(f"k is {k} but array length is {len(arr)}")
+        if not all(isinstance(x, (int, float)) for x in arr):
+            raise TypeError(f"Arr must only contain integers or floats")
+        
         aux = arr.copy()  # Using an aux arr to not modify the original arr
-        random.shuffle(aux)
-        return self._quick_select(aux, k, lower=0, upper=len(arr)-1)
+        random.shuffle(aux)  # Ensuring quickselect efficiency
+        return self._quickselect(aux, k, lower=0, upper=len(arr)-1)
 
-    def _quick_select(self, arr, k, lower, upper):
-        lt, gt = partition_in_place(arr, lower, upper)
+    def _quickselect(self, arr, k, lower, upper):
+        lt, gt = helpers.partition_in_place(arr, lower, upper)
         if k in range(lt, gt+1):
-            print("Final arr: ", arr)
             return arr[gt]  # arbitrary, any value between [lt,gt] would work
         elif k < lt:
-            return self._quick_select(arr, k, lower, lt-2)
+            return self._quickselect(arr, k, lower, lt-1)
         elif k > gt:
-            return self._quick_select(arr, k, gt, upper) 
+            return self._quickselect(arr, k, gt+1, upper) 
 
-    
+if __name__ == '__main__':
+    AS = ArraySearch()
+    AS.quickselect([1,2,3,4,5,6,7,8], 2)    
 
 
 def test_client():
@@ -84,7 +87,3 @@ def test_client():
     position = AS.binary_search_recursive(array_sorted, key)
 
     print(f'Position: {position}')
-
-
-if __name__ == "__main__":
-    test_client()
