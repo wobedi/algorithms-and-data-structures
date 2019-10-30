@@ -1,11 +1,9 @@
-from random import choices, shuffle
+import random
 from time import perf_counter
-
-# add explainer links for algos?
-# fix function order in a way that make sense
-# TODO: Implement proper testing
+from .helpers import partition_in_place
 
 def selection_sort(arr):
+    """Sorts arr by implementing https://en.wikipedia.org/wiki/Selection_sort"""
     for i in range(0, len(arr)):
         min_ = i
         for j in range(i+1, len(arr)):
@@ -14,8 +12,8 @@ def selection_sort(arr):
         arr[i], arr[min_] = arr[min_], arr[i]
     return arr
 
-
 def insertion_sort(arr, increment=1):
+    """Sorts arr by implementing https://en.wikipedia.org/wiki/Insertion_sort"""
     for i in range(increment, len(arr)):
         for j in range(i - increment, -1, -increment):
             if arr[j] > arr[j+increment]:
@@ -24,18 +22,22 @@ def insertion_sort(arr, increment=1):
                 break
     return arr
 
-
 def shell_sort(arr):
-    seq = reversed(list(knuth_3xplus1_sequence(len(arr))))
+    """Sorts arr by implementing https://en.wikipedia.org/wiki/Shellsort"""
+    seq = reversed(list(knuth_sequence(len(arr))))
     for increment in seq:
         insertion_sort(arr, increment=increment)
 
-
-def knuth_3xplus1_sequence(arr_len):
+def knuth_sequence(arr_len):
+    """Generates sequence as per https://oeis.org/A003462 until arr_len is hit"""
     x = 1
     while(x < arr_len):
         yield x
         x = 3*x + 1
+
+def heap_sort(arr):
+    # TODO using import data_structures.binary_heap
+    pass
 
 
 class MergeSort:
@@ -43,16 +45,20 @@ class MergeSort:
         return "MergeSort"
 
     def merge_sort_recursive(self, arr):
+        """Sorts arr by implementing 
+        https://en.wikipedia.org/wiki/Merge_sort#Top-down_implementation
+        """
         if len(arr) <= 1:
             return arr
         lo, mid, hi = 0, len(arr) // 2, len(arr)
         left = self.merge_sort_recursive(arr[lo:mid])
         right = self.merge_sort_recursive(arr[mid:hi])
-
         return self._sort_merge(left, right)
 
     def merge_sort_iterative(self, arr):
-        # "bottom-up merge sort"
+        """Sorts arr by implementing
+        https://en.wikipedia.org/wiki/Merge_sort#Bottom-up_implementation
+        """
         # this one works but is kinda ugly / not self-explenatory
         size = 1
         while size <= len(arr):
@@ -65,6 +71,7 @@ class MergeSort:
         return arr
 
     def _sort_merge(self, left, right):
+        """Merge and sort list:left and list:right and return list:res"""
         res, i, j = [], 0, 0
         while(i < len(left) and j < len(right)):
             if left[i] <= right[j]:
@@ -82,37 +89,26 @@ class QuickSort:
     def __str__(self):
         return "QuickSort"
 
-    # MOVE TO ARRAY SEARCH MODULE?
-    def quick_select(self, arr, k):
-        k = int(k)
-        if k > len(arr):
-            return f"Error - k is {k} but array length is {len(arr)}"
-        aux = arr.copy()  # Using an aux arr to not modify the original arr
-        self.random_shuffle(aux)
-        return self._quick_select(aux, k, lower=0, upper=len(arr)-1)
-
-    # optimize via Use insertion sort for small (e.g. <10) sub-arrays to avoid the overhead of QS // AND use median of three as pivot
-    # choose between median of 3 and turkey's ninther
-    # THEN no random shuffle
     def quick_sort(self, arr):
-        self.random_shuffle(arr)
+        """Sorts arr by implementing https://en.wikipedia.org/wiki/Quicksort"""
+        random.shuffle(arr)
         print("Shuffled: ", arr)
         return self._quick_sort_in_place(arr, lower=0, upper=len(arr)-1)
 
-    def random_shuffle(self, arr):
-        return shuffle(arr)
-
-    def _quick_select(self, arr, k, lower, upper):
-        lt, gt = self._partition_in_place(arr, lower, upper)
-        if k in range(lt, gt+1):
-            print("Final arr: ", arr)
-            return arr[gt]  # arbitrary, any value between [l,r] would work
-        elif k < lt:
-            return self._quick_select(arr, k, lower, lt-2)
-        elif k > gt:
-            return self._quick_select(arr, k, gt, upper) 
+    def _quick_sort_in_place(self, arr, lower, upper):
+        if upper <= lower:
+            return
+        if upper - lower < 10:
+            # optimizing performance by using insertion sort for small arrs
+            insertion_sort(arr)
+        else:
+            lt, gt = partition_in_place(arr, lower, upper)
+            self._quick_sort_in_place(arr, lower, lt-1)
+            self._quick_sort_in_place(arr, gt+1, upper)
+        return arr
 
     def _quick_sort_aux_arr(self, arr):
+        """Uses auxiliary array to make sort stable, using O(N) extra space"""
         if len(arr) <= 1:
             return arr
         pivot = arr[0]
@@ -129,31 +125,7 @@ class QuickSort:
         less = self._quick_sort_aux_arr(less)
         greater = self._quick_sort_aux_arr(greater)
         return less + equal + greater
-
-    def _quick_sort_in_place(self, arr, lower, upper):
-        if upper <= lower:
-            return
-        lt, gt = self._partition_in_place(arr, lower, upper)
-        self._quick_sort_in_place(arr, lower, lt-1)
-        self._quick_sort_in_place(arr, gt+1, upper)
-        return arr
-
-    def _partition_in_place(self, arr, lower, upper):
-        # dijkstra's 3-way partitioning
-        lt, gt, i = lower, upper, lower
-        pivot = arr[lower]
-
-        while i <= gt:
-            if arr[i] < pivot:
-                arr[lt], arr[i] = arr[i], arr[lt]
-                lt, i = lt+1, i+1
-            elif arr[i] > pivot:
-                arr[gt], arr[i] = arr[i], arr[gt]
-                gt -= 1
-            else:
-                i += 1
-        return lt, gt
-
+    
 
 def test_client():
     # combine w array search code into one client
@@ -165,7 +137,7 @@ def test_client():
 
     n = int(n)
 
-    arr = choices(population=range(n*2), k=n)  # n*2 is arbitrary to make it more interesting
+    arr = random.choices(population=range(n*2), k=n)  # n*2 is arbitrary to make it more interesting
     print("Pre:", arr)
 
     Sort = QuickSort()
