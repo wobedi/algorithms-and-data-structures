@@ -1,4 +1,5 @@
 # Implement comparable abstraction to make structs and sorts type-independent?
+# Implement proper docstring as per https://www.python.org/dev/peps/pep-0257/
 
 class BinaryHeap:
     # currently only works for keys of ints
