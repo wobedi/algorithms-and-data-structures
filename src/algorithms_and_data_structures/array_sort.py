@@ -1,6 +1,6 @@
 import random
 from time import perf_counter
-from .helpers import partition_in_place
+# from .helpers import partition_in_place
 
 def selection_sort(arr):
     """Sorts arr by implementing https://en.wikipedia.org/wiki/Selection_sort"""
@@ -140,13 +140,13 @@ def test_client():
     arr = random.choices(population=range(n*2), k=n)  # n*2 is arbitrary to make it more interesting
     print("Pre:", arr)
 
-    Sort = QuickSort()
+    # Sort = MergeSort()
     # k = input("k to find k-th smallest value in arr: ")
     # print(f"{k}-th smallest value is {Sort.quick_select(arr, k)}")
 
-    print(f"\u001b[44m Using {Sort.__str__()} \u001b[0m")  # background color codes
+    # print(f"\u001b[44m Using {Sort.__str__()} \u001b[0m")  # background color codes
     start = perf_counter()
-    print("Post:", Sort.quick_sort(arr))
+    print("Post:", selection_sort(arr))
     stop = perf_counter()
     print(f"Elapsed time: {stop - start}")
 
