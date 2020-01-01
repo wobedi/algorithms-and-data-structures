@@ -100,6 +100,7 @@ class Graph:
     return self.adj_list[v].all()
 
   def v(self):
+    """returns number of vertices"""
     return self.vertex_count
 
   def e_from_edge_list(self):
@@ -115,6 +116,44 @@ class Graph:
     """returns number of edges from adj list"""
     # dividing by 2 because each edge is represented twice
     return sum([vertex.count() for vertex in self.adj_list]) // 2
+
+
+class GraphConnectivityQueries:
+  # TODO Put into own module with graph search as graph queries?
+  def __init__(self, graph: Graph):
+    """preprocesses a graph into all its maximally-connected components in order to find unions in constant time"""
+    self.graph = graph
+    self.vertex_count = self.graph.v()
+    self.component_of = [None for v in range(self.vertex_count)]
+    self.vertex_visited = [False for v in range(self.vertex_count)]
+    self.component_count = None
+    self._preprocess()
+
+  def _preprocess(self):
+    # would run faster if we add a (duplicate) tweaked dfs/bfs method to this class
+    # this would mean duplicate dfs/bfs code but we could get rid of the nested for loop
+    for v in range(self.vertex_count):
+      if self.vertex_visited[v] == False:
+        GS = GraphSearch(self.graph, v)
+        for vertex, visited in enumerate(GS.vertex_visited):
+          if visited:
+            self.vertex_visited[vertex] = True
+            self.component_of[vertex] = v
+    self.component_count = len(set(self.component_of))
+
+  def connected(self, v, w):
+    """returns True if v and w are connected, else False"""
+    # TODO: Rm assert statement in here? put into unit test?
+    assert self.component_of[v] is not None and self.component_of[w] is not None
+    return self.component_of[v] == self.component_of[w]
+
+  def count(self):
+    """returns the number of distinct components"""
+    return self.component_count
+
+  def id(self, v):
+    """returns the connected component id for a given vertex"""
+    return self.component_of[v]
 
 
 class GraphSearch:
@@ -191,11 +230,19 @@ if __name__ == "__main__":
   print(G.adj_from_edge_list(5))
   print(G.adj_from_adj_matrix(5))
   print(G.adj_from_adj_list(5))
-  DFS = GraphSearch(G, 0)
-  print(DFS.source_has_path_to(6))
-  print(DFS.source_path_to(6))
-  print(DFS.source_has_path_to(3))
-  print(DFS.source_path_to(3))
+  GS = GraphSearch(G, 0)
+  print(GS.source_has_path_to(6))
+  print(GS.source_path_to(6))
+  print(GS.source_has_path_to(3))
+  print(GS.source_path_to(3))
+  CC = GraphConnectivityQueries(G)
+  print(CC)
+  assert CC.connected(0, 1) == True
+  assert CC.connected(0, 3) == False
+  assert CC.connected(3, 4) == False
+  assert CC.id(0) == 0
+  assert CC.id(1) == 0
+  assert CC.count() == 3
 
 # **********************************************
 # Vertex count: 10
