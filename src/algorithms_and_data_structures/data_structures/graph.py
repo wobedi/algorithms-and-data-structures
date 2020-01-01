@@ -124,28 +124,26 @@ class GraphSearch:
     self.graph = graph
     self.source = source_vertex
     self.vertex_visited = [False for v in range(graph.v())]
-    self.vertex_visited[source_vertex] = True  # simplifies bfs code
-    self.edge_to = [None for v in range(graph.v())]
-    self.bfs(self.source)
+    self.parent = [None for v in range(graph.v())]
+    self.bfs()
 
-  def bfs(self, v):
-    # visit all adj vertices and mark them and edge them
-    # then recursively visit their adj - already visited
-    # break when no unvisited
-    adj = self.graph.adj_from_adj_list(v)
-    next = [v for v in adj if self.vertex_visited[v] == False]
-    for vertex in next:
-      self.vertex_visited[vertex] = True
-      self.edge_to[vertex] = v
-    for vertex in next:
-      self.bfs(vertex)
+  def bfs(self):
+    queue = [self.source]
+    self.vertex_visited[self.source] = True
+    while queue:
+      v = queue.pop(0)
+      for w in self.graph.adj_from_adj_list(v):
+        if self.vertex_visited[w] == False:
+          self.vertex_visited[w] = True
+          self.parent[w] = v
+          queue.append(w)
 
   def dfs(self, v):
     self.vertex_visited[v] = True
-    for vertex in self.graph.adj_from_adj_list(v):
-      if self.vertex_visited[vertex] == False:
-        self.dfs(vertex)
-        self.edge_to[vertex] = v
+    for w in self.graph.adj_from_adj_list(v):
+      if self.vertex_visited[w] == False:
+        self.parent[w] = v
+        self.dfs(w)
 
   def source_has_path_to(self, v):
     return self.vertex_visited[v]
@@ -154,10 +152,10 @@ class GraphSearch:
     if not self.source_has_path_to(v):
       return []
     path = [v]
-    parent = self.edge_to[v]
+    parent = self.parent[v]
     while parent is not self.source: 
       path.append(parent)
-      parent = self.edge_to[parent]
+      parent = self.parent[parent]
     path.append(self.source)
     path.reverse()
     return path
