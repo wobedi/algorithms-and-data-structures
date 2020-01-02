@@ -36,6 +36,7 @@ class BinaryHeap:
 
     def heap_sort(self):
         # TODO needs testing
+        # TODO should somehow incorporate randomize, heapify, then sort (via public/private methods)
         i = self.size()
         while i > 0:
             self._swap(1, i)
@@ -55,7 +56,7 @@ class BinaryHeap:
 
     def remove_key(self, i):
         if not 1 <= i <= self.size():
-            return Exception(f"index {i} is out of range [1,{self.size()}]")
+            raise Exception(f"index {i} is out of range [1,{self.size()}]")
         self._swap(i, self.size())
         val = self.keys.pop()
         self._swim(i)
@@ -63,7 +64,7 @@ class BinaryHeap:
         return val
 
     def size(self):
-        return len(self.keys) - 1  # bc keys[0] is empty
+        return len(self.keys) - 1  # -1 because keys[0] is empty
 
     def _sink(self, i):
         while 2*i <= self.size():
