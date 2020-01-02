@@ -85,6 +85,10 @@ class Graph:
     # using only adjacency list here to not overcomplicate this code
     return self.adj_list[v].contains(w)
 
+  def adj(self, v):
+    """returns iterable of vertices adjacent to v from adj list"""
+    return self.adj_from_adj_list(v)
+
   def adj_from_edge_list(self, v):
     """returns iterable of vertices adjacent to v from edge list"""
     return [edge[0] if edge[1] == v else edge[1]
@@ -126,7 +130,7 @@ class GraphConnectivityQueries:
     self.vertex_count = self.graph.v()
     self.component_of = [None for v in range(self.vertex_count)]
     self.vertex_visited = [False for v in range(self.vertex_count)]
-    self.component_count = None
+    self.component_count = 0
     self._preprocess()
 
   def _preprocess(self):
@@ -134,12 +138,12 @@ class GraphConnectivityQueries:
     # this would mean duplicate dfs/bfs code but we could get rid of the nested for loop
     for v in range(self.vertex_count):
       if self.vertex_visited[v] == False:
+        self.component_count += 1
         GS = GraphSearch(self.graph, v)
         for vertex, visited in enumerate(GS.vertex_visited):
           if visited:
             self.vertex_visited[vertex] = True
-            self.component_of[vertex] = v
-    self.component_count = len(set(self.component_of))
+            self.component_of[vertex] = self.component_count
 
   def connected(self, v, w):
     """returns True if v and w are connected, else False"""
@@ -159,30 +163,66 @@ class GraphConnectivityQueries:
 class GraphSearch:
   # TODO split into own module
   # TODO enable choice between dfs and bfs for user
+  # TODO (maybe) enable finding of multiple paths via generator
   def __init__(self, graph, source_vertex):
     self.graph = graph
     self.source = source_vertex
-    self.vertex_visited = [False for v in range(graph.v())]
-    self.parent = [None for v in range(graph.v())]
-    self.bfs()
+    self.vertex_count = self.graph.v()
+    self.vertex_visited = [False for v in range(self.vertex_count)]
+    self.parent = [None for v in range(self.vertex_count)]
+    self.cycle = []
+    self._bfs()
 
-  def bfs(self):
+  def _bfs(self):
     queue = [self.source]
-    self.vertex_visited[self.source] = True
     while queue:
       v = queue.pop(0)
-      for w in self.graph.adj_from_adj_list(v):
+      self.vertex_visited[v] = True
+      for w in self.graph.adj(v):
+        if self.vertex_visited[w] == True and not w == self.parent[v]:
+          self.cycle = self.source_path_to(w) + list(reversed(self.source_path_to(v)))
         if self.vertex_visited[w] == False:
-          self.vertex_visited[w] = True
           self.parent[w] = v
           queue.append(w)
 
-  def dfs(self, v):
+  def _dfs(self, v):
     self.vertex_visited[v] = True
-    for w in self.graph.adj_from_adj_list(v):
+    for w in self.graph.adj(v):
+      if self.vertex_visited[w] == True and not w == self.parent[v]:
+        self.cycle = self.source_path_to(w) + list(reversed(self.source_path_to(v)))
       if self.vertex_visited[w] == False:
         self.parent[w] = v
-        self.dfs(w)
+        self._dfs(w)
+
+  def _dfs_iterative(self):
+    stack = [(self.source, None)]
+    while stack:
+      (v, parent) = stack.pop()
+      if self.vertex_visited[v] == True and not v == self.parent[parent]:
+        self.cycle = self.source_path_to(v) + list(reversed(self.source_path_to(parent)))
+      if self.vertex_visited[v] == False:
+        self.vertex_visited[v] = True
+        self.parent[v] = parent
+        stack.extend([(adj, v) for adj in self.graph.adj(v)])
+
+  def _has_self_loop(self):
+    for v in range(self.vertex_count):
+      for w in self.graph.adj(v):
+        if w == v:
+          self.cycle.extend([v, v])
+          return True
+
+  def _has_parallel_edge(self):
+    for v in range(self.vertex_count):
+      visited = [False for v in range(self.vertex_count)]
+      for w in self.graph.adj(v):
+        if visited[w]:
+          self.cycle.extend([v, w, v])
+          return True
+        visited[w] = True
+
+  def is_acyclic(self):
+    return bool(self.cycle)
 
   def source_has_path_to(self, v):
     return self.vertex_visited[v]
@@ -198,6 +238,67 @@ class GraphSearch:
     path.append(self.source)
     path.reverse()
     return path
+
+# class GraphCycles:
+# DOESNT WORK - SEEMS VERY COMLPEX
+#   def __init__(self, graph: Graph):
+#     self.graph = graph
+#     self.vertex_count = self.graph.v()
+#     self.vertex_visited = [False for v in range(self.vertex_count)]
+#     self.parent = [None for v in range(self.vertex_count)]
+#     self.cycles = set()
+
+#   def dfs_with_cycles(self, v, entry):
+#     self.vertex_visited[v] = True
+#     for w in self.graph.adj(v):
+#       if self.vertex_visited[w] == True:
+#         cycle = self.path_between()
+#       if self.vertex_visited[w] == False:
+#         self.vertex_visited[w] = True
+#         self.parent[w] = v
+#         self.dfs_with_cycles[w, entry]
+
+#   def find_cycles(self):
+#     self_loop_generator = self.find_self_loops()
+#     parallel_edge_generator = self.find_parallel_edges()
+#     for _ in self_loop_generator:
+#       yield
+#     for _ in parallel_edge_generator:
+#       yield
+#     CC = GraphConnectivityQueries(self.graph)
+#     entry_points = CC.get_one_vertex_per_component()
+#     for v in entry_points:
+
+#   def find_self_loops(self):
+#     for v in range(self.vertex_count):
+#       for w in self.graph.adj(v):
+#         if w == v:
+#           self.cycles.add([v, v])
+#           yield
+
+#   def find_parallel_edges(self):
+#     for v in range(self.vertex_count):
+#       visited = [False for v in range(self.vertex_count)]
+#       for w in self.graph.adj(v):
+#         if visited[w]:
+#           self.cycles.add([v, w, v])
+#           yield
+#         visited[w] = True
+
+#   def has_path_between(self, u, v):
+#     return self.vertex_visited[u] & self.vertex_visited[v]
+
+#   def path_between(self, u, v):
+#     if not self.has_path_to(v):
+#       return []
+#     path = [v]
+#     parent = self.parent[v]
+#     while parent is not u: 
+#       path.append(parent)
+#       parent = self.parent[parent]
+#     path.append(u)
+#     path.reverse()
+#     return path
 
 
 # TODO translate this into a proper unit test
@@ -215,6 +316,7 @@ if __name__ == "__main__":
   G.add_edge(2,9)
   G.add_edge(9,2)
   G.add_edge(3,5)
+  G.add_edge(6,9)
   print(f'Vertex count: {G.vertex_count}')
   print(f'Edge count: {G.e_from_edge_list()} / {G.e_from_adj_matrix()} / {G.e_from_adj_list()}')
   print(G)
@@ -232,16 +334,18 @@ if __name__ == "__main__":
   print(G.adj_from_adj_list(5))
   GS = GraphSearch(G, 0)
   print(GS.source_has_path_to(6))
-  print(GS.source_path_to(6))
+  print('Path from source to 6:', GS.source_path_to(6))
   print(GS.source_has_path_to(3))
-  print(GS.source_path_to(3))
+  print('Path from source to 3:', GS.source_path_to(3))
+  print('Arbitrary cycle (if any):', GS.cycle)
   CC = GraphConnectivityQueries(G)
   print(CC)
   assert CC.connected(0, 1) == True
   assert CC.connected(0, 3) == False
   assert CC.connected(3, 4) == False
-  assert CC.id(0) == 0
-  assert CC.id(1) == 0
+  assert CC.id(0) == 1
+  assert CC.id(1) == 1
+  assert CC.id(4) == 3
   assert CC.count() == 3
 
 # **********************************************
@@ -275,6 +379,8 @@ if __name__ == "__main__":
 # [3]
 # [3]
 # True
-# [0, 9, 2, 6]
+# Path from source to 6: [0, 9, 6]
 # False
-# []
+# Path from source to 3: []
+# Arbitrary cycle (if any): [0, 9, 6, 2, 9, 0]
+# <__main__.GraphConnectivityQueries object at 0x7f246aa7a5d0>
