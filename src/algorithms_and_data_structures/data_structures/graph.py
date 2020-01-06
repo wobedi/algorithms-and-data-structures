@@ -1,60 +1,31 @@
 from functools import reduce
 from pandas import DataFrame
 
-class ListItem:
-  # TODO Refactor this into LinkedList & ListItem classes in sep file and import
-  def __init__(self, value, next=None):
-    self.value = value
-    self.next = next
-
-  def all(self):
-    res = []
-    item = self
-    while item is not None:
-      res.append(item.value) if item.value is not None else None
-      item = item.next
-    return res
-
-  def contains(self, value):
-    item = self
-    while item is not None:
-      if item.value == value:
-        return True
-      item = item.next
-    return False
-
-  def count(self):
-    count = 0
-    item = self
-    while item.next is not None:
-      count += 1
-      item = item.next
-    return count
-
-  def final(self):
-    item = self
-    while item.next is not None:
-      item = item.next
-    return item
-
 class Digraph:
   # TODO Inheriting from Graph? Or rather: Refactor graph based on Digraph
   def __init__(self, vertex_count):
     """Implements a digraph that supports self loops but not parallel edges"""
     self.vertex_count = vertex_count
     self.adj_list = [set() for v in range(vertex_count)]
+    self.adj_list_reversed = [set() for v in range(vertex_count)]
 
   def __str__(self):
     return (f'Adj List: {[list(v) for v in self.adj_list]}\n'
+            f'Adj List reversed: {[list(v) for v in self.adj_list_reversed]}\n'
             f'**********************************************')
 
   def add_edge(self, v, w):
     """adds a directional edge from v to w"""
     self.adj_list[v].add(w)
+    self.adj_list_reversed[w].add(v)
 
   def adj(self, v):
     """returns a list of vertices adjacent to v"""
     return list(self.adj_list[v])
+
+  def adj_reversed(self, v):
+    """returns a list of vertices adjacent to v in reversed digraph"""
+    return list(self.adj_list_reversed[v])
 
   def e(self):
     """returns number of edges"""
@@ -64,14 +35,33 @@ class Digraph:
     """returns True if there is a directional edge from v to w, else False"""
     return w in self.adj_list[v]
 
+  def edge_between_reversed(self, v, w):
+    """returns True if there is a directional edge from v to w in reversed digraph, else False"""
+    return w in self.adj_list_reversed[v]
+
   def v(self):
     """returns number of vertices"""
     return self.vertex_count
 
-  def topological_sort(self):
-    """implements https://en.wikipedia.org/wiki/Topological_sorting#Depth-first_search"""
-    # TODO
-    pass
+  def topologically_sorted(self):
+    # TODO move this to processing class?
+    """implements https://en.wikipedia.org/wiki/Topological_sorting#Depth-first_search
+       returns topologically sorted list of vertices in adj list. Assumes adj_list is a maximally-connected DAG"""
+    visited_vertices = [False for v in range(self.v())]
+    postorder = []
+    for v in range(self.v()):
+      if not visited_vertices[v]:
+        self._dfs_with_postorder_tracking(v, visited_vertices, postorder)
+    return list(reversed(postorder))
+
+  def _dfs_with_postorder_tracking(self, v, visited: list, postorder: list):
+    visited[v] = True
+    for w in self.adj(v):
+      if visited[w]:
+        raise Exception('Graph is cyclic - cannot be topologically sorted')
+      self._dfs_with_postorder_tracking(w, visited, postorder)
+    postorder.append(v)
+
 
 class Graph:
   # TODO: Missing error handling
@@ -151,11 +141,11 @@ class Graph:
 
   def _e_from_adj_list(self):
     """returns number of edges from adj list"""
-    # dividing by 2 because each edge is represented twice
+    # dividing by 2 because each edge is represented twice: [v][w] and [w][v]
     return sum([len(vertex_set) for vertex_set in self.adj_list]) // 2
 
 
-class GraphConnectivityQueries:
+class GraphConnectivity:
   # TODO Put into own module with graph search as graph queries?
   def __init__(self, graph: Graph):
     """preprocesses a graph into all its maximally-connected components in order to find unions in constant time"""
@@ -193,6 +183,68 @@ class GraphConnectivityQueries:
             self.component_of[vertex] = self.component_count
 
 
+class GraphStrongConnectivity:
+  """Implementing https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm
+     by preprocessing graph in linear time. 
+     Enables looking up strongly connected components in constant time."""
+  def __init__(self, graph: Digraph):
+    self.graph = graph
+    self.vertex_count = graph.v()
+    self.component_count = 0
+    self.visited_vertices = [False for v in range(graph.v())]
+    self.component_id = [None for v in range(graph.v())]
+    self.postorder = []
+    self._preprocess()
+
+  def __str__(self):
+    strong_components = [[] for c in range(self.component_count)]
+    for index, id in enumerate(self.component_id):
+      strong_components[id].append(index)
+    return f'Strong components: {strong_components}'
+
+  def count(self):
+    return self.component_count
+
+  def id(self, v):
+    return self.component_id[v]
+
+  def strongly_connected(self, v, w):
+    return self.component_id[v] == self.component_id[w]
+
+  def _dfs_with_component_marking(self, v):
+    self.visited_vertices[v] = True
+    self.component_id[v] = self.component_count
+    for w in self.graph.adj(v):
+      if not self.visited_vertices[w]:
+        self._dfs_with_component_marking(w)
+    return
+
+
+  def _dfs_reverse_graph_with_postorder_tracking(self, v):
+    self.visited_vertices[v] = True
+    for w in self.graph.adj_reversed(v):
+      if not self.visited_vertices[w]:
+        self._dfs_reverse_graph_with_postorder_tracking(w)
+    self.postorder.append(v)
+    return
+
+  def _reset_visited_vertices(self):
+    self.visited_vertices = [False for v in range(self.vertex_count)]
+
+  def _preprocess(self):
+    # dfs on reverse graph, track (reverse) post order
+    for vertex in range(self.vertex_count):
+      if not self.visited_vertices[vertex]:
+        self._dfs_reverse_graph_with_postorder_tracking(vertex)
+    self._reset_visited_vertices()
+
+    # dfs on normal graph but iterate through vertices in the order given by step 1
+    for vertex in reversed(self.postorder):
+      if not self.visited_vertices[vertex]:
+        self._dfs_with_component_marking(vertex)
+        self.component_count += 1
+
+
 class GraphSearch:
   # TODO split into own module
   # TODO enable choice between dfs, dfs iterative and bfs for user
@@ -200,11 +252,11 @@ class GraphSearch:
   def __init__(self, graph, source_vertex):
     self.graph = graph
     self.source = source_vertex
-    self.vertex_count = self.graph.v()
-    self.vertex_visited = [False for v in range(self.vertex_count)]
-    self.parent = [None for v in range(self.vertex_count)]
+    self.vertex_count = graph.v()
+    self.vertex_visited = [False for v in range(graph.v())]
+    self.parent = [None for v in range(graph.v())]
     self.cycle = []
-    self._bfs()
+    self._dfs(source_vertex)
 
   def is_acyclic(self):
     return bool(self.cycle)
@@ -299,7 +351,7 @@ class GraphSearch:
 #       yield
 #     for _ in parallel_edge_generator:
 #       yield
-#     CC = GraphConnectivityQueries(self.graph)
+#     CC = GraphConnectivity(self.graph)
 #     entry_points = CC.get_one_vertex_per_component()
 #     for v in entry_points:
 
@@ -336,54 +388,70 @@ class GraphSearch:
 
 
 # TODO translate this into a proper unit test
-# if __name__ == "__main__":
-#   DG = Digraph(10)
-#   print(DG)
-#   DG.add_edge(0,9)
-#   DG.add_edge(0,9)
-#   print(DG)
-#   DG.add_edge(0,8)
-#   DG.add_edge(0,7)
-#   DG.add_edge(1,2)
-#   DG.add_edge(1,1)
-#   DG.add_edge(2,6)
-#   DG.add_edge(2,9)
-#   DG.add_edge(9,2)
-#   DG.add_edge(3,5)
-#   DG.add_edge(6,9)
-#   print(f'Vertex count: {DG.v()}')
-#   print(f'Edge count: {DG.e()}')
-#   print(DG)
-#   print('Edges for vertex 0:')
-#   print(DG.adj(0))
-#   print('Edges for vertex 9:')
-#   print(DG.adj(9))
-#   print('Edges for vertex 5:')
-#   print(DG.adj(5))
-#   GS = GraphSearch(DG, 0)
-#   print(GS.source_has_path_to(2))
-#   print('Path from source to 2:', GS.source_path_to(2))
-#   print(GS.source_has_path_to(3))
-#   print('Path from source to 3:', GS.source_path_to(3))
-#   print('Arbitrary cycle (if any):', GS.cycle)
-  # CC = GraphConnectivityQueries(DG)
-  # print(CC)
-  # assert CC.connected(0, 1) == True
-  # assert CC.connected(0, 3) == False
-  # assert CC.connected(3, 4) == False
-  # assert CC.id(0) == 1
-  # assert CC.id(1) == 1
-  # assert CC.id(4) == 3
-  # assert CC.count() == 3
+if __name__ == "__main__":
+  DG = Digraph(10)
+  print(DG)
+  DG.add_edge(0,9)
+  DG.add_edge(0,9)
+  print(DG)
+  DG.add_edge(0,8)
+  DG.add_edge(0,7)
+  DG.add_edge(1,2)
+  DG.add_edge(1,1)
+  DG.add_edge(2,6)
+  DG.add_edge(2,9)
+  DG.add_edge(9,2)
+  DG.add_edge(3,5)
+  DG.add_edge(6,9)
+  DG.add_edge(7,8)
+  DG.add_edge(8,0)
+  print(f'Vertex count: {DG.v()}')
+  print(f'Edge count: {DG.e()}')
+  print(DG)
+  print('Edges for vertex 0:')
+  print(DG.adj(0))
+  print('Edges for vertex 9:')
+  print(DG.adj(9))
+  print('Edges for vertex 5:')
+  print(DG.adj(5))
+  GS = GraphSearch(DG, 0)
+  print(GS.source_has_path_to(2))
+  print('Path from source to 2:', GS.source_path_to(2))
+  print(GS.source_has_path_to(3))
+  print('Path from source to 3:', GS.source_path_to(3))
+  print('Arbitrary cycle (if any):', GS.cycle)
+  # print(f'Topologically sorted: {DG.topologically_sorted()}')  EXPECT TO THROW ERROR
 
+  SC = GraphStrongConnectivity(DG)
+  print(SC)
+  assert SC.strongly_connected(0, 7) == True
+  assert SC.strongly_connected(6, 2) == True
+  assert SC.strongly_connected(1, 1) == True
+  assert SC.strongly_connected(0, 9) == False
+  assert SC.strongly_connected(3, 5) == False
+  assert SC.count() == 6
+
+  DG2 = Digraph(7)
+  print(DG2)
+  DG2.add_edge(0,1)
+  DG2.add_edge(1,2)
+  DG2.add_edge(1,3)
+  DG2.add_edge(0,4)
+  DG2.add_edge(4,5)
+  DG2.add_edge(4,6)
+  print(DG2)
+  print(f'Topologically sorted: {DG2.topologically_sorted()}')
 
 # Adj List: [[], [], [], [], [], [], [], [], [], []]
+# Adj List reversed: [[], [], [], [], [], [], [], [], [], []]
 # **********************************************
 # Adj List: [[9], [], [], [], [], [], [], [], [], []]
+# Adj List reversed: [[], [], [], [], [], [], [], [], [], [0]]
 # **********************************************
 # Vertex count: 10
-# Edge count: 10
-# Adj List: [[8, 9, 7], [1, 2], [9, 6], [5], [], [], [9], [], [], [2]]
+# Edge count: 12
+# Adj List: [[8, 9, 7], [1, 2], [9, 6], [5], [], [], [9], [8], [0], [2]]
+# Adj List reversed: [[8], [1], [1, 9], [], [], [3], [2], [0], [0, 7], [0, 2, 6]]
 # **********************************************
 # Edges for vertex 0:
 # [8, 9, 7]
@@ -395,53 +463,61 @@ class GraphSearch:
 # Path from source to 2: [0, 9, 2]
 # False
 # Path from source to 3: []
-# Arbitrary cycle (if any): [0, 9, 6, 2, 9, 0]
+# Arbitrary cycle (if any): [0, 8, 7, 0]
+# Strong components: [[5], [4], [3], [2, 6, 9], [1], [0, 7, 8]]
+# Adj List: [[], [], [], [], [], [], []]
+# Adj List reversed: [[], [], [], [], [], [], []]
+# **********************************************
+# Adj List: [[1, 4], [2, 3], [], [], [5, 6], [], []]
+# Adj List reversed: [[], [0], [1], [1], [0], [4], [4]]
+# **********************************************
+# Topologically sorted: [0, 4, 6, 5, 1, 3, 2]
 
-if __name__ == "__main__":
-  G = Graph(10)
-  print(G)
-  G.add_edge(0,9)
-  G.add_edge(0,9)
-  print(G)
-  G.add_edge(0,8)
-  G.add_edge(0,7)
-  G.add_edge(1,2)
-  G.add_edge(1,1)
-  G.add_edge(2,6)
-  G.add_edge(2,9)
-  G.add_edge(9,2)
-  G.add_edge(3,5)
-  G.add_edge(6,9)
-  print(f'Vertex count: {G.v()}')
-  print(f'Edge count: {G._e_from_edge_list()} / {G._e_from_adj_matrix()} / {G._e_from_adj_list()}')
-  print(G)
-  print('Edges for vertex 0:')
-  print(G._adj_from_edge_list(0))
-  print(G._adj_from_adj_matrix(0))
-  print(G._adj_from_adj_list(0))
-  print('Edges for vertex 9:')
-  print(G._adj_from_edge_list(9))
-  print(G._adj_from_adj_matrix(9))
-  print(G._adj_from_adj_list(9))
-  print('Edges for vertex 5:')
-  print(G._adj_from_edge_list(5))
-  print(G._adj_from_adj_matrix(5))
-  print(G._adj_from_adj_list(5))
-  GS = GraphSearch(G, 0)
-  print(GS.source_has_path_to(6))
-  print('Path from source to 6:', GS.source_path_to(6))
-  print(GS.source_has_path_to(3))
-  print('Path from source to 3:', GS.source_path_to(3))
-  print('Arbitrary cycle (if any):', GS.cycle)
-  CC = GraphConnectivityQueries(G)
-  print(CC)
-  assert CC.connected(0, 1) == True
-  assert CC.connected(0, 3) == False
-  assert CC.connected(3, 4) == False
-  assert CC.id(0) == 1
-  assert CC.id(1) == 1
-  assert CC.id(4) == 3
-  assert CC.count() == 3
+# if __name__ == "__main__":
+#   G = Graph(10)
+#   print(G)
+#   G.add_edge(0,9)
+#   G.add_edge(0,9)
+#   print(G)
+#   G.add_edge(0,8)
+#   G.add_edge(0,7)
+#   G.add_edge(1,2)
+#   G.add_edge(1,1)
+#   G.add_edge(2,6)
+#   G.add_edge(2,9)
+#   G.add_edge(9,2)
+#   G.add_edge(3,5)
+#   G.add_edge(6,9)
+#   print(f'Vertex count: {G.v()}')
+#   print(f'Edge count: {G._e_from_edge_list()} / {G._e_from_adj_matrix()} / {G._e_from_adj_list()}')
+#   print(G)
+#   print('Edges for vertex 0:')
+#   print(G._adj_from_edge_list(0))
+#   print(G._adj_from_adj_matrix(0))
+#   print(G._adj_from_adj_list(0))
+#   print('Edges for vertex 9:')
+#   print(G._adj_from_edge_list(9))
+#   print(G._adj_from_adj_matrix(9))
+#   print(G._adj_from_adj_list(9))
+#   print('Edges for vertex 5:')
+#   print(G._adj_from_edge_list(5))
+#   print(G._adj_from_adj_matrix(5))
+#   print(G._adj_from_adj_list(5))
+#   GS = GraphSearch(G, 0)
+#   print(GS.source_has_path_to(6))
+#   print('Path from source to 6:', GS.source_path_to(6))
+#   print(GS.source_has_path_to(3))
+#   print('Path from source to 3:', GS.source_path_to(3))
+#   print('Arbitrary cycle (if any):', GS.cycle)
+#   CC = GraphConnectivity(G)
+#   print(CC)
+#   assert CC.connected(0, 1) == True
+#   assert CC.connected(0, 3) == False
+#   assert CC.connected(3, 4) == False
+#   assert CC.id(0) == 1
+#   assert CC.id(1) == 1
+#   assert CC.id(4) == 3
+#   assert CC.count() == 3
 
 # Edge List: []
 # Adj Matrix: 
@@ -507,4 +583,4 @@ if __name__ == "__main__":
 # False
 # Path from source to 3: []
 # Arbitrary cycle (if any): [0, 9, 6, 2, 9, 0]
-# <__main__.GraphConnectivityQueries object at 0x7f87af109110>
+# <__main__.GraphConnectivity object at 0x7f87af109110>
