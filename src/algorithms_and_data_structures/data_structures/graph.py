@@ -44,7 +44,7 @@ class Digraph:
     return self.vertex_count
 
   def topologically_sorted(self):
-    # TODO move this to processing class?
+    # TODO move this to processing class? or no?
     """implements https://en.wikipedia.org/wiki/Topological_sorting#Depth-first_search
        returns topologically sorted list of vertices in adj list. Assumes adj_list is a maximally-connected DAG"""
     visited_vertices = [False for v in range(self.v())]
@@ -95,7 +95,7 @@ class Graph:
     self.adj_matrix[v][w] = self.adj_matrix[w][v] = 1
     
     # add edge to adj list
-    if not w in self.adj_list[v]:
+    if not self.edge_between(v, w):
       self.adj_list[v].add(w)
       self.adj_list[w].add(v)
 
