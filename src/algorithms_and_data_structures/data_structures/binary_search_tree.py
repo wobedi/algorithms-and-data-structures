@@ -1,11 +1,13 @@
-from .queue import Queue
-
 class BinarySearchTree:
     """Implements https://en.wikipedia.org/wiki/Binary_search_tree"""    
     def __init__(self):
         self.root = None
         self.upserted_node = None
 
+    def __str__(self):
+        return str(self.keys())
+
+    # TODO move upwards? best practice?
     class Node:
         def __init__(self, key, value, left=None, right=None):
             self.key, self.value, self.left, self.right = key, value, left, right
@@ -100,13 +102,29 @@ class BinarySearchTree:
         return self.root is not None
 
     def keys(self):
-        q = Queue()
-        self.traverse_inorder(self.root, q)
+        q = []
+        self.traverse(self.root, q, 'inorder')
         return q
 
-    def traverse_inorder(self, node, queue):
+    def traverse(self, node, queue, order):
+        assert order in {'preorder', 'inorder', 'postorder'}
         if node is None: 
             return
-        self.traverse_inorder(node.left, queue)
-        queue.enqueue(node.key)
-        self.traverse_inorder(node.right, queue)
+        queue.append(node.key) if order == 'preorder' else None
+        self.traverse(node.left, queue, order)
+        queue.append(node.key) if order == 'inorder' else None
+        self.traverse(node.right, queue, order)
+        queue.append(node.key) if order == 'postorder' else None
+
+
+if __name__ == '__main__':
+    BST = BinarySearchTree()
+    BST.put(7,7)
+    BST.put(4,4)
+    BST.put(3,3)
+    BST.put(5,5)
+    BST.put(10,10)
+    BST.put(8,8)
+    BST.put(12,12)
+    print(BST)
+    

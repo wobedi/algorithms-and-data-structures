@@ -2,7 +2,6 @@ from functools import reduce
 from pandas import DataFrame
 
 class ListItem:
-  # TODO change this to bag?
   # TODO Refactor this into LinkedList & ListItem classes in sep file and import
   def __init__(self, value, next=None):
     self.value = value
