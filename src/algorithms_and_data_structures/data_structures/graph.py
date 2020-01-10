@@ -1,8 +1,61 @@
+import heapq
 from functools import reduce
+from math import inf
 from pandas import DataFrame
 
+class Edge:
+  def __init__(self, v, w, weight=0):
+    self.v = v
+    self.w = w
+    self.weight = weight
+
+  def __str__(self):
+    return f'{self.v} - {self.w}: {self.weight}'
+
+  def either(self):
+    return self.v
+
+  def both(self):
+    return self.v, self.w
+
+  def other(self, vertex):
+    if vertex != self.v and vertex != self.w:
+      print(f'Error: This Edge connects {self.v} and {self.w} - not {vertex}')
+      return
+    return self.v if vertex == self.w else self.w
+  
+  def compare_to(self, other):
+    if self.weight < other.weight:
+      return -1
+    if self.weight > other.weight:
+      return 1
+    return 0
+
+
+class DirectedEdge:
+  def __init__(self, v, w, weight=0):
+    self.v = v
+    self.w = w
+    self.weight = weight
+  
+  def __str__(self):
+    return f'{self.v} - {self.w}: {self.weight}'
+
+  def from_(self):
+    return self.v
+
+  def to(self):
+    return self.w
+  
+  def compare_to(self, other):
+    if self.weight < other.weight:
+      return -1
+    if self.weight > other.weight:
+      return 1
+    return 0
+
+
 class Digraph:
-  # TODO Inheriting from Graph? Or rather: Refactor graph based on Digraph
   def __init__(self, vertex_count):
     """Implements a digraph that supports self loops but not parallel edges"""
     self.vertex_count = vertex_count
@@ -14,7 +67,7 @@ class Digraph:
             f'Adj List reversed: {[list(v) for v in self.adj_list_reversed]}\n'
             f'**********************************************')
 
-  def add_edge(self, v, w):
+  def add_edge(self, v: int, w: int):
     """adds a directional edge from v to w"""
     self.adj_list[v].add(w)
     self.adj_list_reversed[w].add(v)
@@ -29,7 +82,7 @@ class Digraph:
 
   def e(self):
     """returns number of edges"""
-    return len([w for v in self.adj_list for w in v])
+    return reduce(lambda a, b: a + len(b), self.adj_list, 0)
 
   def edge_between(self, v, w):
     """returns True if there is a directional edge from v to w, else False"""
@@ -61,6 +114,29 @@ class Digraph:
         raise Exception('Graph is cyclic - cannot be topologically sorted')
       self._dfs_with_postorder_tracking(w, visited, postorder)
     postorder.append(v)
+
+
+# class MinimumSpanningTree:
+#   def __init__(self, graph):
+#     # TODO can we assume/check graph is connected? otherwise return MS forest?
+#     # TODO check if graph is undirected
+#     self.graph = graph  
+#     self.mst = None
+
+#   def cut(self):
+#     pass
+
+#   def min_weight(self, cut):
+#     pass
+
+#   def edges(self):
+#     pass
+
+#   def weight(self):
+#     pass
+
+#   def kruskals_algo(self):
+#     pass
 
 
 class Graph:
@@ -144,6 +220,94 @@ class Graph:
     # dividing by 2 because each edge is represented twice: [v][w] and [w][v]
     return sum([len(vertex_set) for vertex_set in self.adj_list]) // 2
 
+
+class DigraphWithWeightedEdges:
+  """Supports parallel edges and self loops"""
+  # TODO: How to reduce redundancy between classes in this file? Some way to compose?
+  def __init__(self, vertex_count):
+    self.vertex_count = vertex_count
+    self.adj_list = [set() for v in range(vertex_count)]
+
+  def __str__(self):
+    edges_flat = [e for s in self.adj_list for e in s]
+    formatted = [f'{e.from_()}->{e.to()}: {e.weight}' for e in edges_flat]
+    return (f'Adj List: {formatted}\n'
+            f'**********************************************')
+  
+  def add_edge(self, e: DirectedEdge):
+    """adds edge from v to w"""
+    self.adj_list[e.from_()].add(e)
+
+  def adj(self, v):
+    """returns edges from v"""
+    # TODO test
+    return [edge for edge in self.adj_list[v]]
+
+  def edge_between(self, v, w):
+    """returns True if there is an edge from v to w, else False"""
+    # TODO test
+    # bool([edge for edge in self.adj_list[v] if edge.to() == w])
+    return reduce(lambda a, b: a | b.to() == w, self.adj_list, False)
+
+  def edges(self):
+    """returns iterable of edges"""
+    return [e for s in self.adj_list for e in s]
+
+  def e(self):
+    """returns number of edges"""
+    return reduce(lambda a, b: a + len(b), self.adj_list, 0)
+
+  def v(self):
+    """returns number of vertices"""
+    return len(self.adj_list)
+
+
+class ShortestPath:
+  """preprocesses a weighted digraph to find shortest paths from a source vertex to any other vertex in constant time"""
+  def __init__(self, graph: DigraphWithWeightedEdges, source):
+    self.graph = graph
+    self.source = source
+    self.parent = [None for v in range(graph.v())]
+    self.dist_to = [inf for v in range(graph.v())]
+    self.dist_to[source] = 0
+    self.heap = []
+    self._dijkstras_shortest_path()
+
+  def source_shortest_path_to(self, v):
+    """returns iterable of path from source to v"""
+    path = [v]
+    parent = self.parent[v]
+    while parent is not None:
+      path.append(parent)
+      parent = self.parent[parent]
+    return list(reversed(path))
+
+  def source_distance_to(self, v):
+    """returns distance (total weight) from source to v"""
+    return self.dist_to[v]
+
+  def _relax(self, e: DirectedEdge):
+    """relaxes edge from v to w if possible"""
+    v, w = e.from_(), e.to()
+    # TODO could skip alrady dealt-with vertices here?
+    if self.dist_to[w] > self.dist_to[v] + e.weight:
+      self.parent[w] = v
+      self.dist_to[w] = self.dist_to[v] + e.weight
+      # TODO add decrease-key?
+      heapq.heappush(self.heap, (self.dist_to[w], w))
+  
+  def _optimality_conditions(self):
+    """returns True if optimality condition has been reached, else False"""
+    # optimalitiy conditions: "pareto-efficient" dist_to, with no empty dist_tos
+    pass
+
+  def _dijkstras_shortest_path(self):
+    """implements https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm"""
+    heapq.heappush(self.heap, (0, self.source))
+    while self.heap:
+      _, v = heapq.heappop(self.heap)
+      for edge in self.graph.adj(v):
+        self._relax(edge)
 
 class GraphConnectivity:
   # TODO Put into own module with graph search as graph queries?
@@ -388,59 +552,59 @@ class GraphSearch:
 
 
 # TODO translate this into a proper unit test
-if __name__ == "__main__":
-  DG = Digraph(10)
-  print(DG)
-  DG.add_edge(0,9)
-  DG.add_edge(0,9)
-  print(DG)
-  DG.add_edge(0,8)
-  DG.add_edge(0,7)
-  DG.add_edge(1,2)
-  DG.add_edge(1,1)
-  DG.add_edge(2,6)
-  DG.add_edge(2,9)
-  DG.add_edge(9,2)
-  DG.add_edge(3,5)
-  DG.add_edge(6,9)
-  DG.add_edge(7,8)
-  DG.add_edge(8,0)
-  print(f'Vertex count: {DG.v()}')
-  print(f'Edge count: {DG.e()}')
-  print(DG)
-  print('Edges for vertex 0:')
-  print(DG.adj(0))
-  print('Edges for vertex 9:')
-  print(DG.adj(9))
-  print('Edges for vertex 5:')
-  print(DG.adj(5))
-  GS = GraphSearch(DG, 0)
-  print(GS.source_has_path_to(2))
-  print('Path from source to 2:', GS.source_path_to(2))
-  print(GS.source_has_path_to(3))
-  print('Path from source to 3:', GS.source_path_to(3))
-  print('Arbitrary cycle (if any):', GS.cycle)
-  # print(f'Topologically sorted: {DG.topologically_sorted()}')  EXPECT TO THROW ERROR
+# if __name__ == "__main__":
+#   DG = Digraph(10)
+#   print(DG)
+#   DG.add_edge(0,9)
+#   DG.add_edge(0,9)
+#   print(DG)
+#   DG.add_edge(0,8)
+#   DG.add_edge(0,7)
+#   DG.add_edge(1,2)
+#   DG.add_edge(1,1)
+#   DG.add_edge(2,6)
+#   DG.add_edge(2,9)
+#   DG.add_edge(9,2)
+#   DG.add_edge(3,5)
+#   DG.add_edge(6,9)
+#   DG.add_edge(7,8)
+#   DG.add_edge(8,0)
+#   print(f'Vertex count: {DG.v()}')
+#   print(f'Edge count: {DG.e()}')
+#   print(DG)
+#   print('Edges for vertex 0:')
+#   print(DG.adj(0))
+#   print('Edges for vertex 9:')
+#   print(DG.adj(9))
+#   print('Edges for vertex 5:')
+#   print(DG.adj(5))
+#   GS = GraphSearch(DG, 0)
+#   print(GS.source_has_path_to(2))
+#   print('Path from source to 2:', GS.source_path_to(2))
+#   print(GS.source_has_path_to(3))
+#   print('Path from source to 3:', GS.source_path_to(3))
+#   print('Arbitrary cycle (if any):', GS.cycle)
+#   # print(f'Topologically sorted: {DG.topologically_sorted()}')  EXPECT TO THROW ERROR
 
-  SC = GraphStrongConnectivity(DG)
-  print(SC)
-  assert SC.strongly_connected(0, 7) == True
-  assert SC.strongly_connected(6, 2) == True
-  assert SC.strongly_connected(1, 1) == True
-  assert SC.strongly_connected(0, 9) == False
-  assert SC.strongly_connected(3, 5) == False
-  assert SC.count() == 6
+#   SC = GraphStrongConnectivity(DG)
+#   print(SC)
+#   assert SC.strongly_connected(0, 7) == True
+#   assert SC.strongly_connected(6, 2) == True
+#   assert SC.strongly_connected(1, 1) == True
+#   assert SC.strongly_connected(0, 9) == False
+#   assert SC.strongly_connected(3, 5) == False
+#   assert SC.count() == 6
 
-  DG2 = Digraph(7)
-  print(DG2)
-  DG2.add_edge(0,1)
-  DG2.add_edge(1,2)
-  DG2.add_edge(1,3)
-  DG2.add_edge(0,4)
-  DG2.add_edge(4,5)
-  DG2.add_edge(4,6)
-  print(DG2)
-  print(f'Topologically sorted: {DG2.topologically_sorted()}')
+#   DG2 = Digraph(7)
+#   print(DG2)
+#   DG2.add_edge(0,1)
+#   DG2.add_edge(1,2)
+#   DG2.add_edge(1,3)
+#   DG2.add_edge(0,4)
+#   DG2.add_edge(4,5)
+#   DG2.add_edge(4,6)
+#   print(DG2)
+#   print(f'Topologically sorted: {DG2.topologically_sorted()}')
 
 # Adj List: [[], [], [], [], [], [], [], [], [], []]
 # Adj List reversed: [[], [], [], [], [], [], [], [], [], []]
@@ -584,3 +748,30 @@ if __name__ == "__main__":
 # Path from source to 3: []
 # Arbitrary cycle (if any): [0, 9, 6, 2, 9, 0]
 # <__main__.GraphConnectivity object at 0x7f87af109110>
+
+
+if __name__ == '__main__':
+  graph_size = 10
+  DGE = DigraphWithWeightedEdges(graph_size)
+  for i, j in zip(range(15), range(0, 30, 2)):
+    DE = DirectedEdge(i % graph_size, i*(3*i+2)//3 % graph_size, j)
+    DGE.add_edge(DE)
+  MORE = [(4, 7, 31), (4, 2, 32), (2, 3, 33), (1, 0, 33)]
+  for i in MORE:
+    DGE.add_edge(DirectedEdge(i[0], i[1], i[2]))
+  print(DGE)
+  SP = ShortestPath(DGE, 4)
+  print(f'4 to 5: {SP.source_distance_to(5)} via {SP.source_shortest_path_to(5)}')
+  print(f'4 to 3: {SP.source_distance_to(3)} via {SP.source_shortest_path_to(3)}')
+  print(f'4 to 6: {SP.source_distance_to(6)} via {SP.source_shortest_path_to(6)}')
+  print(f'4 to 7: {SP.source_distance_to(7)} via {SP.source_shortest_path_to(7)}')
+  print(f'4 to 4: {SP.source_distance_to(4)} via {SP.source_shortest_path_to(4)}')
+
+
+# Adj List: ['0->0: 0', '0->6: 20', '1->8: 22', '1->1: 2', '1->0: 33', '2->2: 24', '2->5: 4', '2->3: 33', '3->1: 6', '3->7: 26', '4->5: 28', '4->7: 31', '4->8: 8', '4->2: 32', '5->8: 10', '6->0: 12', '7->3: 14', '8->9: 16', '9->7: 18']
+# **********************************************
+# 4 to 5: 28 via [4, 5]
+# 4 to 3: 45 via [4, 7, 3]
+# 4 to 6: 104 via [4, 7, 3, 1, 0, 6]
+# 4 to 7: 31 via [4, 7]
+# 4 to 4: 0 via [4]
