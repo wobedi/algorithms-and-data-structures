@@ -7,10 +7,10 @@ class HashSet:
     self.load = 0
 
   def contains(self, key):
-    return self._find_index(key)[0]
+    return self._linear_probing(key)[0]
 
   def put(self, key):
-    key_in_set, index = self._find_index(key)
+    key_in_set, index = self._linear_probing(key)
     if key_in_set:
       return f'Insertion error: Key {key} is already part of this hash set'
     self.set[index] = key
@@ -20,7 +20,7 @@ class HashSet:
     return
 
   def delete(self, key):
-    key_in_set, index = self._find_index(key)
+    key_in_set, index = self._linear_probing(key)
     if not key_in_set:
       return f'Deletion error: Key {key} is NOT part of this hash set'
     self.set[index] = None
@@ -37,7 +37,7 @@ class HashSet:
       self._downsize()
     return
 
-  def _find_index(self, key, set_=None):
+  def _linear_probing(self, key, set_=None):
     """Linear probing for key through hash set. Returns tuple: (True, index) for search hits at index, (False, index) for search misses where index is the final index checked/first index with key==None"""
     set_ = set_ or self.set
     index = self._modular_hash(key)  # entry point for linear probing
@@ -64,7 +64,7 @@ class HashSet:
     new_set = [None for i in range(self.size)]
     for key in self.set:
       if key is None: continue
-      key_in_set, index = self._find_index(key, new_set)
+      key_in_set, index = self._linear_probing(key, new_set)
       if key_in_set: return 'Syntax Error while resizing'
       new_set[index] = key
     self.set = new_set
@@ -87,6 +87,7 @@ if __name__ == '__main__':
   HT.put(3)
   print(HT.set)
   HT.put(4)
+  # _linear_probing
   print(HT.set)
   HT.put(5)
   print(HT.set)
