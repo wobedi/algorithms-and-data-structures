@@ -295,11 +295,6 @@ class ShortestPath:
       self.dist_to[w] = self.dist_to[v] + e.weight
       # TODO add decrease-key?
       heapq.heappush(self.heap, (self.dist_to[w], w))
-  
-  def _optimality_conditions(self):
-    """returns True if optimality condition has been reached, else False"""
-    # optimalitiy conditions: "pareto-efficient" dist_to, with no empty dist_tos
-    pass
 
   def _dijkstras_shortest_path(self):
     """implements https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm"""
