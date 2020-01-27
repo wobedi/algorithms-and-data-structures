@@ -28,7 +28,7 @@ class TernarySearchTrie:
 
   def _get(self, string: str, index, node: TernarySearchTrieNode):
     c = string[index]
-    if node == None:
+    if node is None:
       print(f'String {string} is not in Trie')
       return False
     if c < node.c:
@@ -46,7 +46,7 @@ class TernarySearchTrie:
 
   def _put(self, string: str, index, value, node: TernarySearchTrieNode):  
     c = string[index]
-    if node == None:
+    if node is None:
       node = TernarySearchTrieNode(c)
     if c < node.c:
       node.left = self._put(string, index, value, node.left)
@@ -60,7 +60,7 @@ class TernarySearchTrie:
 
   def _delete(self, string: str, index, node: TernarySearchTrieNode):
     c = string[index]
-    if node == None:
+    if node is None:
       print(f'String {string} is not in Trie')
       return None
     if c < node.c:
@@ -86,6 +86,33 @@ class RWayTrie:
     self.radix = radix
     self.root = RWayTriNode(radix)
 
+  def keys(self, node=None):
+    res = []
+    self._keys(node or self.root, '', res)
+    return res
+
+  def longest_prefix_of(self, s: str):
+    # TODO only if value present?
+    res = ''
+    node = self.root
+    for c in s:
+      code = ord(c)
+      if not node.next[code]:
+        break
+      res = res + c
+      node = node.next[code]
+    return res
+
+  def keys_with_prefix(self, p: str):
+    node = self.root
+    for c in p:
+      code = ord(c)
+      if not node.next[code]:
+        print(f'Prefix {p} is not in Trie')
+        return False
+      node = node.next[code]
+    return [p + s for s in self.keys(node)]
+    
   def get(self, string: str):
     self._throw_if_out_of_radix(string)
     node = self.root
@@ -142,44 +169,71 @@ class RWayTrie:
                        f'encode to value outside of radix range {self.radix}')
     return
 
-# if __name__ == '__main__':
-#   T = RWayTrie()
-#   TEST_STRINGS = ['appleE', "donkey'][]", "garfield123"]
-#   print(T)
-#   T.get('a')
-#   for c in 'bcdeIUOHEWR$5345':
-#     T.put(c, ord(c))
-#   print(T)
-#   for s in TEST_STRINGS:
-#     T.put(s, s)
-#   for s in TEST_STRINGS:
-#     assert T.get(s)[0] != False
-#   T.delete('appleE')
-#   assert T.get('appleE')[0] == False
-#   assert T.get('a')[0] == False
-#   print(T)
+  def _keys(self, node: RWayTriNode, prefix, result):
+    if node is None:
+      return
+    if node.value is not None:
+      result.append(prefix)
+    i = 0
+    while i < self.radix:
+      self._keys(node.next[i], prefix + chr(i), result)
+      i += 1
+    
+      
 
 if __name__ == '__main__':
-  T = TernarySearchTrie()
+  T = RWayTrie()
+  TEST_STRINGS = ['appleE', "donkey'][]", "garfield123", "garfunkel"]
   print(T)
-  assert T.get('a') == False
-  TEST_STRINGS = ['appleE', "donkey'][]", "donner", "garfield123", "garfunkel"]
-  for i, s in enumerate(TEST_STRINGS):
-    T.put(s, i + 1)
-  assert T.get('a') == False
+  T.get('a')
   for s in TEST_STRINGS:
-    assert T.get(s) == True
-  T.delete('garfield123')
-  assert T.get('garfield123') == False
-  assert T.get("garfunkel") == True
-  assert T.get('a') == False
+    T.put(s, s)
+  for s in TEST_STRINGS:
+    assert T.get(s)[0] == True
+  assert set(T.keys()) == {'appleE', "donkey'][]", "garfield123", "garfunkel"}
+  assert T.longest_prefix_of('donkendonuTs') == 'donke'
+  assert set(T.keys_with_prefix('garf')) == {"garfield123", "garfunkel"} 
+  T.delete('appleE')
+  assert T.get('appleE')[0] == False
+  assert set(T.keys()) == {"donkey'][]", "garfield123", "garfunkel"}
+  assert T.get('a')[0] == False
+  assert T.get('a')[0] == False
+  assert T.get('a')[0] == False
   print(T)
+
+# if __name__ == '__main__':
+#   T = TernarySearchTrie()
+#   print(T)
+#   assert T.get('a') == False
+#   TEST_STRINGS = ['appleE', "donkey'][]", "donner", "garfield123", "garfunkel"]
+#   for i, s in enumerate(TEST_STRINGS):
+#     T.put(s, i + 1)
+#   assert T.get('a') == False
+#   for s in TEST_STRINGS:
+#     assert T.get(s) == True
+#   T.delete('garfield123')
+#   assert T.get('garfield123') == False
+#   assert T.get("garfunkel") == True
+#   assert T.get('a') == False
+#   print(T)
 
 # <__main__.TernarySearchTrie object at 0x7fcbdd062b10>
 # String a is not in Trie
 # String a is not in Trie
 # String appleE is in Trie with value 1
 # String donkey'][] is in Trie with value 2
+# <__main__.TernarySearchTrie object at 0x7fcbdd062b10>
+# String a is not in Trie
+# String a is not in Trie
+# String appleE is in Trie with value 1
+# String donkey'][] is in Trie with value 2
+# String donner is in Trie with value 3
+# String garfield123 is in Trie with value 4
+# String garfunkel is in Trie with value 5
+# String garfield123 is not in Trie
+# String garfunkel is in Trie with value 5
+# String a is not in Trie
+# <__main__.TernarySearchTrie object at 0x7fcbdd062b10>
 # String donner is in Trie with value 3
 # String garfield123 is in Trie with value 4
 # String garfunkel is in Trie with value 5
