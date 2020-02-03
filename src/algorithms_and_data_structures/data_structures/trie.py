@@ -14,6 +14,7 @@ class TernarySearchTrieNode:
 
 
 class TernarySearchTrie:
+  # TODO (maybe): keys(), longestPrefix(s) and keysWithPrefix(s)?
   def __init__(self):
     self.root = None
 
@@ -180,7 +181,6 @@ class RWayTrie:
       i += 1
     
       
-
 if __name__ == '__main__':
   T = RWayTrie()
   TEST_STRINGS = ['appleE', "donkey'][]", "garfield123", "garfunkel"]

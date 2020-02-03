@@ -125,7 +125,25 @@ class QuickSort:
         less = self._quick_sort_aux_arr(less)
         greater = self._quick_sort_aux_arr(greater)
         return less + equal + greater
+
+
+# def key_indexed_sorting(arr: [int], radix: int):
+#     # count # of occurrences per radix variant
+#     count = [0 for _ in range(radix)]
+#     for el in arr:
+#         count[el] += 1
     
+#     # cumulate it to get offsets
+#     for i in range(1, len(count)):
+#         count[i] += count[i-1]
+
+#     # sort stuff by moving at index and increment offset         
+#     sorted_arr = [None for _ in range(len(arr))]
+#     for el in arr:
+#         sorted_arr[count[el]] = el
+#         count[el] += 1
+    
+#     return sorted_arr
 
 def test_client():
     # combine w array search code into one client
