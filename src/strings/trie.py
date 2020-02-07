@@ -1,6 +1,7 @@
 from functools import reduce
 
 # TODO: Understand: Why does it work efficiently for 32 bit ints? 
+# TODO: Split r-way trie and TST
 
 class TernarySearchTrieNode:
   def __init__(self, char, value=None):
