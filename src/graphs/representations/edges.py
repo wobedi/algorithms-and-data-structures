@@ -26,8 +26,7 @@ class Edge:
       return 1
     return 0
 
-class DirectedEdge:
-  # TODO: Inherit here?
+class DirectedEdge(Edge):
   def __init__(self, v, w, weight=0):
     self.v = v
     self.w = w

@@ -1,5 +1,8 @@
 from pandas import DataFrame
 
+from src.symbol_tables import config
+
+
 class HashMap:
   def __init__(self, size):
     self.size = size
@@ -17,7 +20,7 @@ class HashMap:
         return
     row.append((key, value))
     self.load += 1
-    if self.load == self.size:
+    if self.load / self.size >= config.chaining['LOAD_FACTOR_MAX']:
       self.upsize()
     return 
 
@@ -37,7 +40,7 @@ class HashMap:
       if tup[0] == key:
         del row[i]
         self.load -= 1
-        if self.load <= self.size / 4:
+        if self.load / self.size <= config.chaining['LOAD_FACTOR_MIN']:
           self.downsize()
         return
 
@@ -45,10 +48,10 @@ class HashMap:
     return hash(key) % self.size
 
   def downsize(self):
-    return self.resize(0.5)
+    return self.resize(config.chaining['DOWNSIZE_FACTOR'])
   
   def upsize(self):
-    return self.resize(2)
+    return self.resize(config.chaining['UPSIZE_FACTOR'])
 
   def resize(self, factor):
     self.size = int(self.size * factor)
@@ -58,6 +61,7 @@ class HashMap:
         aux_table[self.modular_hash(k)].append((k, v))
     self.table = aux_table
     return
+
 
 # Turn this into a unit test
 if __name__ == '__main__':

@@ -1,9 +1,8 @@
-# TODO: Remove this as helper?
 def three_way_partition(arr, lower, upper):
   """ Implements 
   https://en.wikipedia.org/wiki/Dutch_national_flag_problem#The_array_case """
   lt, gt, i = lower, upper, lower
-  pivot = arr[lower]  # performance could be improved by using smarter pivot
+  pivot = arr[lower]  # TODO performance could be improved by using smarter pivot
 
   while i <= gt:
     if arr[i] < pivot:

@@ -1,8 +1,9 @@
 from functools import reduce
 from pandas import DataFrame
-from src.graphs.graph_operations.graph_connectivity import GraphConnectivity
-from src.graphs.graph_operations.graph_search import GraphSearch
-# TODO: post unit tests: clean up imports
+
+from src.graphs.operations.graph_connectivity import GraphConnectivity
+from src.graphs.operations.graph_search import GraphSearch
+
 
 class Graph:
   def __init__(self, vertex_count):

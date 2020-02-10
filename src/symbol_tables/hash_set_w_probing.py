@@ -1,4 +1,5 @@
-### TODO: Put magic numbers from here and from hash map into config
+from src.symbol_tables import config
+
 
 class HashSet:
   def __init__(self, size):
@@ -15,7 +16,7 @@ class HashSet:
       return f'Insertion error: Key {key} is already part of this hash set'
     self.set[index] = key
     self.load += 1
-    if self.load / self.size > 0.75:
+    if self.load / self.size >= config.probing['LOAD_FACTOR_MAX']:
       self._upsize()
     return
 
@@ -33,12 +34,13 @@ class HashSet:
        index += 1
        next += 1
     
-    if self.load / self.size < 0.25:
+    if self.load / self.size < config.probing['LOAD_FACTOR_MIN']:
       self._downsize()
     return
 
   def _linear_probing(self, key, set_=None):
-    """Linear probing for key through hash set. Returns tuple: (True, index) for search hits at index, (False, index) for search misses where index is the final index checked/first index with key==None"""
+    """ Linear probing for key through hash set. Returns tuple: (True, index) for search hits at index, 
+        (False, index) for search misses where index is the final index checked/first index with key==None"""
     set_ = set_ or self.set
     index = self._modular_hash(key)  # entry point for linear probing
     while set_[index] is not None:
@@ -53,11 +55,11 @@ class HashSet:
   def _modular_hash(self, key):
     return hash(key) % self.size
 
-  def _upsize(self):
-    return self._resize(2)
-
   def _downsize(self):
-    return self._resize(0.5)
+    return self._resize(config.probing['DOWNSIZE_FACTOR'])
+
+  def _upsize(self):
+    return self._resize(config.probing['UPSIZE_FACTOR'])
 
   def _resize(self, factor):
     self.size = int(self.size * factor)

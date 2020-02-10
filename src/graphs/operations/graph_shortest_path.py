@@ -1,11 +1,9 @@
 import heapq
 from math import inf
-from src.graphs.graph_representations.edges import DirectedEdge
-from src.graphs.graph_representations.graph_weighted import DigraphWeighted
 
 class GraphShortestPath:
   """preprocesses a weighted digraph to find shortest paths from a source vertex to any other vertex in constant time"""
-  def __init__(self, graph: DigraphWeighted, source):
+  def __init__(self, graph, source):
     self.graph = graph
     self.source = source
     self.parent = [None for v in range(graph.v())]
@@ -27,21 +25,20 @@ class GraphShortestPath:
     """returns distance (total weight) from source to v"""
     return self.dist_to[v]
 
-  def _relax(self, e: DirectedEdge):
+  def _relax(self, e):
     """relaxes edge from v to w if possible"""
     v, w = e.from_(), e.to()
-    # TODO could skip alrady dealt-with verticwes here?
+    # TODO skipping already dealt-with vertices here would improve performance.
     if self.dist_to[w] > self.dist_to[v] + e.weight:
       self.parent[w] = v
       self.dist_to[w] = self.dist_to[v] + e.weight
-      # TODO add decrease-key?
+      # TODO adding decrease-key here would significantly improve performance.
       heapq.heappush(self.heap, (self.dist_to[w], w))
 
   def _dijkstras_shortest_path(self):
     """implements https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm"""
     heapq.heappush(self.heap, (0, self.source))
     while self.heap:
-      # TODO can I clean this up with lt/gt methods?
       _, v = heapq.heappop(self.heap)
       for edge in self.graph.adj(v):
         self._relax(edge)

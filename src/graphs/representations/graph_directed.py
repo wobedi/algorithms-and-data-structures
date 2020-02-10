@@ -1,8 +1,9 @@
 from functools import reduce
-from src.graphs.graph_operations.graph_connectivity import GraphStrongConnectivity
-from src.graphs.graph_operations.graph_search import GraphSearch
 
-# TODO: post unit tests: clean up imports
+from src.graphs.operations.graph_connectivity import GraphStrongConnectivity
+from src.graphs.operations.graph_search import GraphSearch
+from src.graphs.operations.graph_topological_sort import topologically_sort
+
 
 class Digraph:
   def __init__(self, vertex_count):
@@ -44,25 +45,6 @@ class Digraph:
   def v(self):
     """returns number of vertices"""
     return self.vertex_count
-
-  def topologically_sorted(self):
-    # TODO move this to processing class? or no?
-    """implements https://en.wikipedia.org/wiki/Topological_sorting#Depth-first_search
-       returns topologically sorted list of vertices in adj list. Assumes adj_list is a maximally-connected DAG"""
-    visited_vertices = [False for v in range(self.v())]
-    postorder = []
-    for v in range(self.v()):
-      if not visited_vertices[v]:
-        self._dfs_with_postorder_tracking(v, visited_vertices, postorder)
-    return list(reversed(postorder))
-
-  def _dfs_with_postorder_tracking(self, v, visited: list, postorder: list):
-    visited[v] = True
-    for w in self.adj(v):
-      if visited[w]:
-        raise Exception('Graph is cyclic - cannot be topologically sorted')
-      self._dfs_with_postorder_tracking(w, visited, postorder)
-    postorder.append(v)
 
 if __name__ == "__main__":
   DG = Digraph(10)
@@ -116,7 +98,7 @@ if __name__ == "__main__":
   DG2.add_edge(4,5)
   DG2.add_edge(4,6)
   print(DG2)
-  print(f'Topologically sorted: {DG2.topologically_sorted()}')
+  print(f'Topologically sorted: {topologically_sort(DG2)}')
 
 # Adj List: [[], [], [], [], [], [], [], [], [], []]
 # Adj List reversed: [[], [], [], [], [], [], [], [], [], []]

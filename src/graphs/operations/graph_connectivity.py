@@ -1,10 +1,7 @@
-from src.graphs.graph_representations.graph_directed import Digraph
-from src.graphs.graph_representations.graph_undirected import Graph
-from graph_search import GraphSearch
+from src.graphs.operations.graph_search import GraphSearch
 
 class GraphConnectivity:
-  # TODO Put into own module with graph search as graph queries?
-  def __init__(self, graph: Graph):
+  def __init__(self, graph):
     """preprocesses a graph into all its maximally-connected components in order to find unions in constant time"""
     self.graph = graph
     self.vertex_count = self.graph.v()
@@ -15,7 +12,6 @@ class GraphConnectivity:
 
   def connected(self, v, w):
     """returns True if v and w are connected, else False"""
-    # TODO: Rm assert statement in here? put into unit test?
     assert self.component_of[v] is not None and self.component_of[w] is not None
     return self.component_of[v] == self.component_of[w]
 
@@ -44,7 +40,7 @@ class GraphStrongConnectivity:
   """Implementing https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm
      by preprocessing graph in linear time. 
      Enables looking up strongly connected components in constant time."""
-  def __init__(self, graph: Digraph):
+  def __init__(self, graph):
     self.graph = graph
     self.vertex_count = graph.v()
     self.component_count = 0

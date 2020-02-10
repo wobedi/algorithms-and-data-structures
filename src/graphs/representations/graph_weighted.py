@@ -1,11 +1,11 @@
 from functools import reduce
+
 from edges import DirectedEdge
-from src.graphs.graph_operations.graph_shortest_path import GraphShortestPath
-# TODO: post unit tests: clean up imports
+from src.graphs.operations.graph_shortest_path import GraphShortestPath
+
 
 class DigraphWeighted:
   """Supports parallel edges and self loops"""
-  # TODO: How to reduce redundancy between classes in this file? Some way to compose?
   def __init__(self, vertex_count):
     self.vertex_count = vertex_count
     self.adj_list = [set() for v in range(vertex_count)]
@@ -22,13 +22,10 @@ class DigraphWeighted:
 
   def adj(self, v):
     """returns edges from v"""
-    # TODO test
     return [edge for edge in self.adj_list[v]]
 
   def edge_between(self, v, w):
     """returns True if there is an edge from v to w, else False"""
-    # TODO test
-    # bool([edge for edge in self.adj_list[v] if edge.to() == w])
     return reduce(lambda a, b: a | b.to() == w, self.adj_list, False)
 
   def edges(self):

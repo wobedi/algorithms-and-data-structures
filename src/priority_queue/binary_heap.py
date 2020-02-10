@@ -1,19 +1,11 @@
 class BinaryHeap:
-  """Implements https://en.wikipedia.org/wiki/Binary_heap"""
-  # TODO currently only works for keys of ints
-  # TODO currently only max binary heap, not min binary heap (minus tho)
+  """ Implements https://en.wikipedia.org/wiki/Binary_heap
+      Using positive weights -> max-heap, using negative weights -> min-heap.
+      Keys must be comparable."""
   def __init__(self, keys=[]):
     self.keys = [None]
     self.keys[1:] = keys
     self.heapify()
-
-  def change_key(self, i, key):
-    if not 1 <= i <= self.size():
-      return Exception(f"index {i} is out of range [1,{self.size()}]")
-    self.keys[i] = key
-    i = self._swim(i)
-    i = self._sink(i)
-    return i
 
   def del_max(self):
     if self.is_empty():
@@ -24,8 +16,6 @@ class BinaryHeap:
     return val 
 
   def heapify(self):
-    # in-place, bottom-up
-    # TODO needs testing
     if self.size() <= 1:
       return
     i = self.size()  // 2  # first node from the end who has children
@@ -35,7 +25,6 @@ class BinaryHeap:
     return
 
   def heap_sort(self):
-    # TODO needs testing
     # TODO should somehow incorporate randomize, heapify, then sort (via public/private methods)
     i = self.size()
     while i > 0:

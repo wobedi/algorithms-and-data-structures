@@ -1,6 +1,5 @@
 class GraphSearch:
-  # TODO enable choice between dfs, dfs iterative and bfs for user
-  # TODO bonus: enable finding of multiple paths via generator
+
   def __init__(self, graph, source_vertex):
     self.graph = graph
     self.source = source_vertex
