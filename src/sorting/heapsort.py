@@ -1,3 +1,23 @@
+from random import shuffle
+from src.priority_queue.binary_heap import BinaryHeap
+
+
 def heapsort(arr):
-    # TODO using import data_structures.binary_heap
-    pass
+  """Implements https://en.wikipedia.org/wiki/Heapsort"""
+  shuffle(arr)  # randomizing for probabilistic performance improvement
+  heap = BinaryHeap(arr)
+
+  # using 'private' ._swap() and ._sink() methods here, a bit hack-ish.
+  i = len(arr)
+  while i > 0:
+    heap._swap(1, i)
+    heap._sink(1, i)
+    i -= 1
+  arr = heap.values()
+  return arr
+
+if __name__ == '__main__':
+  keys = [1,2,3,10,34,22,14,21,0]
+  keys_sorted = sorted(keys)
+  print(heapsort(keys))
+  assert(heapsort(keys)) == keys_sorted
