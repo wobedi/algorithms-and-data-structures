@@ -18,28 +18,6 @@ def _lcs_length_recursive(a: str, b: str, i: int, j: int):
               _lcs_length_recursive(a, b, i, j+1)
             ])
 
-def lcs_length_memoized(a: str, b: str):
-  """ Calculates the length of the longest common subsequence of two strings 
-      in O(nm) where n an m are the lengths of the strings"""
-  if len(a) < 1 or len(b) < 1:
-    raise Exception('Please provide two non-empty strings')
-  cache = [[0 for _ in range(len(b))] for _ in range(len(a))]
-  return _lcs_length_memoized(a, b, 0, 0, cache), cache
-
-def _lcs_length_memoized(a: str, b: str, i: int, j: int, cache: [[int]]):
-  # TODO cache seems buggy here
-  if i >= len(a) or j >= len(b):
-    return 0
-  if not cache[i][j]:
-    if a[i] == b[j]:
-      cache[i][j] = 1 + _lcs_length_memoized(a, b, i+1, j+1, cache)
-    else:
-      cache[i][j] = max([
-                          _lcs_length_memoized(a, b, i+1, j, cache),
-                          _lcs_length_memoized(a, b, i, j+1, cache)
-                        ])
-  return cache[i][j]
-
 def lcs_length_bottom_up(a: str, b: str):
   """ Calculates the length of the longest common subsequence of two strings 
       in O(nm) where n an m are the lengths of the strings"""
@@ -70,21 +48,11 @@ if __name__ == '__main__':
   print('### LCS("nematode knowledge", "empty bottle") ###')
   print('#################################################')
   a, b = "nematode knowledge", "empty bottle"
-  # print('RECURSIVE IMPLEMENTATION:')
-  # start = perf_counter()
-  # print(lcs_length_recursive('nematode knowledge', 'empty bottle'))
-  # stop = perf_counter()
-  # print(f'Secs: {stop - start}\n')
-
-  # print('MEMOIZED IMPLEMENTATION:')
-  # start = perf_counter()
-  # length, cache = lcs_length_memoized(a, b)
-  # lcs = lcs_from_length_cache(a, b, cache)
-  # stop = perf_counter()
-  # print(f'Length: {length}')
-  # print(f'LCS: {lcs}')
-  # print(f'Cache:\n{DataFrame(cache)}')
-  # print(f'Secs: {stop - start}\n')
+  print('RECURSIVE IMPLEMENTATION:')
+  start = perf_counter()
+  print(lcs_length_recursive('nematode knowledge', 'empty bottle'))
+  stop = perf_counter()
+  print(f'Secs: {stop - start}\n')
 
   print('BOTTOM-UP IMPLEMENTATION:')
   start = perf_counter()
