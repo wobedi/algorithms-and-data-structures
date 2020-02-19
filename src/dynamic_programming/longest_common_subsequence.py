@@ -3,7 +3,7 @@ from time import perf_counter
 from pandas import DataFrame
 
 
-def lcs_length_recursive(a: str, b: str):
+def lcs_length_recursive(a: str, b: str) -> int:
     """Calculates the length of the longest common subsequence of two strings
     in O(2^n)/O(2^m) where n an m are the lengths of the strings
     """
@@ -12,7 +12,7 @@ def lcs_length_recursive(a: str, b: str):
     return _lcs_length_recursive(a, b, 0, 0)
 
 
-def _lcs_length_recursive(a: str, b: str, i: int, j: int):
+def _lcs_length_recursive(a: str, b: str, i: int, j: int) -> int:
     # Recursively find LCS of a and b, looping through their indices i and j
     if i >= len(a) or j >= len(b):
         return 0
@@ -24,9 +24,11 @@ def _lcs_length_recursive(a: str, b: str, i: int, j: int):
                ])
 
 
-def lcs_length_bottom_up(a: str, b: str):
+def lcs_length_bottom_up(a: str, b: str) -> int, [[int]]:
     """Calculates the length of the longest common subsequence of two strings
-    in O(nm) where n an m are the lengths of the strings
+    in O(nm) where n an m are the lengths of the strings.
+    Returns both the length of the LCS as well as the full cache for
+    subsequent derivation of the actual LCS by lcs_from_length_cache().
     """
     # cache has one extra row and column of zeroes for convenience
     cache = [[0 for _ in range(len(b) + 1)] for _ in range(len(a) + 1)]

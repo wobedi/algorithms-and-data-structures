@@ -14,7 +14,7 @@ def quickselect(arr: list, k: int):
     return _quickselect(aux, k, lower=0, upper=len(arr)-1)
 
 
-def _quickselect(arr, k, lower, upper):
+def _quickselect(arr: list, k: int, lower: int, upper: int):
     """Recursive implementation of quickselect"""
     lt, gt = partition.three_way_partition(arr, lower, upper)
     if k in range(lt, gt+1):

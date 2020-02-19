@@ -7,9 +7,10 @@ from src.graphs.operations.graph_search import GraphSearch
 
 
 class Graph:
-    def __init__(self, vertex_count):
+    def __init__(self, vertex_count: int):
         """Implements three graph representation variants for illustration
         purposes: list of edges, adjaceny matrix, adjacency list.
+        All representations represent vertices as integers.
         Supports self loops but not parallel edges.
         """
         self.vertex_count = vertex_count
@@ -25,7 +26,7 @@ class Graph:
                 f'Adj List: {[v for v in self.adj_list]}\n'
                 f'**********************************************')
 
-    def add_edge(self, v, w):
+    def add_edge(self, v: int, w: int):
         """Adds edge between v and w"""
         # add edge to edge list
         (self.edge_list.append((v, w))
@@ -41,48 +42,48 @@ class Graph:
             self.adj_list[v].add(w)
             self.adj_list[w].add(v)
 
-    def adj(self, v):
+    def adj(self, v: int) -> list:
         """Returns an iterable of vertices adjacent to v (from adj list)"""
         return self._adj_from_adj_list(v)
 
-    def e(self):
+    def e(self) -> int:
         """Returns number of edges"""
         return self._e_from_adj_list()
 
-    def edge_between(self, v, w):
+    def edge_between(self, v: int, w: int) -> bool:
         """Returns True if there is an edge between v and w, else False"""
         # using only adjacency list here to not overcomplicate this code
         return w in self.adj_list[v]
 
-    def v(self):
+    def v(self) -> int:
         """Returns number of vertices"""
         return self.vertex_count
 
-    def _adj_from_edge_list(self, v):
+    def _adj_from_edge_list(self, v: int) -> list:
         """Returns an iterable of vertices adjacent to v from edge list"""
         return [edge[0] if edge[1] == v else edge[1]
                 for edge in self.edge_list
                 if edge[0] == v or edge[1] == v]
 
-    def _adj_from_adj_matrix(self, v):
+    def _adj_from_adj_matrix(self, v: int) -> list:
         """Returns iterable of vertices adjacent to v from adj matrix"""
         return [index for (index, value) in enumerate(self.adj_matrix[v])
                 if value == 1]
 
-    def _adj_from_adj_list(self, v):
+    def _adj_from_adj_list(self, v: int) -> list:
         """Returns iterable of vertices adjacent to v from adj list"""
         return self.adj_list[v]
 
-    def _e_from_edge_list(self):
+    def _e_from_edge_list(self) -> int:
         """Returns number of edges from edge list"""
         return len(self.edge_list)
 
-    def _e_from_adj_matrix(self):
+    def _e_from_adj_matrix(self) -> int:
         """Returns number of edges from adj matrix"""
         # divide by 2 because each edge is represented twice: [v][w] and [w][v]
         return reduce(lambda a, b: a + b.count(1), self.adj_matrix, 0) // 2
 
-    def _e_from_adj_list(self):
+    def _e_from_adj_list(self) -> int:
         """Returns number of edges from adj list"""
         # divide by 2 because each edge is represented twice: [v][w] and [w][v]
         return sum([len(vertex_set) for vertex_set in self.adj_list]) // 2

@@ -3,7 +3,7 @@ from random import shuffle
 from src.priority_queue.binary_heap import BinaryHeap
 
 
-def heapsort(arr):
+def heapsort(arr: list) -> list:
     """Implements https://en.wikipedia.org/wiki/Heapsort"""
     shuffle(arr)    # randomizing for probabilistic performance improvement
     heap = BinaryHeap(arr)

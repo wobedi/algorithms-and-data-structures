@@ -10,7 +10,7 @@ def mergesort_recursive(arr):
     return _sort_merge(left, right)
 
 
-def mergesort_iterative(arr):
+def mergesort_iterative(arr: list) -> list:
     """Sorts arr by implementing
     https://en.wikipedia.org/wiki/Merge_sort#Bottom-up_implementation
     """
@@ -25,9 +25,10 @@ def mergesort_iterative(arr):
     return arr
 
 
-def _sort_merge(left, right):
+def _sort_merge(left: list, right: list) -> list:
     """Merge and sort list:left and list:right and return list:res"""
-    res, i, j = [], 0, 0
+    res = []
+    i = j = 0
     while(i < len(left) and j < len(right)):
         if left[i] <= right[j]:
             res.append(left[i])

@@ -32,7 +32,7 @@ class BinaryHeap:
         self.keys.append(key)
         return self._swim(self.size())
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         """Returns True if heap is empty, else False"""
         return len(self.keys) <= 1  # because keys[0] is empty
 
@@ -40,11 +40,11 @@ class BinaryHeap:
         """Returns the maximum value at the top of the heap if there is one"""
         return self.keys[1] if len(self.keys) > 1 else None
 
-    def size(self):
-        """Returns the number of values stored ni the heap"""
+    def size(self) -> int:
+        """Returns the number of values stored in the heap"""
         return len(self.keys) - 1  # -1 because keys[0] is empty
 
-    def values(self):
+    def values(self) -> list:
         """Returns an iterable of all values in the heap"""
         return self.keys[1:]
 
@@ -64,11 +64,11 @@ class BinaryHeap:
             i = j
         return i
 
-    def _swap(self, i, j):
+    def _swap(self, i: int, j: int):
         # Swaps two values/nodes
         self.keys[i], self.keys[j] = self.keys[j], self.keys[i]
 
-    def _swim(self, i):
+    def _swim(self, i: int):
         # Iteratively swaps a value with parent values until
         # heap invariants are restored (opposite of self._sink()).
         parent_i = max(1, i // 2)  # parent = i//2 except for keys[1]

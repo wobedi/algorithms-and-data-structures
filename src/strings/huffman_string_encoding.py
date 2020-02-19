@@ -3,7 +3,7 @@ from collections import defaultdict
 from functools import total_ordering
 
 
-def huffman_encode_into_trie(s: str):
+def huffman_encode_into_trie(s: str) -> _BinaryNode:
     """Implements https://en.wikipedia.org/wiki/Huffman_coding"""
     count = defaultdict(int)
     for char in s:
@@ -29,7 +29,9 @@ def huffman_encode_into_trie(s: str):
 @total_ordering
 class _BinaryNode:
     """Implements a binary search trie node"""
-    def __init__(self, char, weight, zero=None, one=None):
+    def __init__(self, char: str, weight: int,
+                 zero: _BinaryNode = None,
+                 one: _BinaryNode = None):
         self.char = char
         self.weight = weight
         self.zero: _BinaryNode = zero

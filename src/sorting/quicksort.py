@@ -4,14 +4,16 @@ from basic_sorts import insertion_sort
 from src.helpers.partition import three_way_partition
 
 
-def quick_sort(arr):
-    """Sorts arr by implementing https://en.wikipedia.org/wiki/Quicksort"""
+def quick_sort(arr: list) -> list:
+    """Sorts arr in-place
+    by implementing https://en.wikipedia.org/wiki/Quicksort
+    """
     shuffle(arr)
     print("Shuffled: ", arr)
     return _quick_sort(arr, lower=0, upper=len(arr)-1)
 
 
-def _quick_sort(arr, lower, upper):
+def _quick_sort(arr: list, lower: int, upper: int) -> list:
     """Recursive implementation of quicksort"""
     if upper <= lower:
         return

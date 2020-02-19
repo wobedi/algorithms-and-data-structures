@@ -13,17 +13,17 @@ class GraphConnectivity:
         self.component_count = 0
         self._preprocess()
 
-    def connected(self, v, w):
+    def connected(self, v: int, w: int) -> bool:
         """Returns True if v and w are connected, else False"""
         assert (self.component_of[v] is not None
                 and self.component_of[w] is not None)
         return self.component_of[v] == self.component_of[w]
 
-    def count(self):
+    def count(self) -> int:
         """Returns the number of distinct components"""
         return self.component_count
 
-    def id(self, v):
+    def id(self, v) -> int:
         """Returns the connected component id for a given vertex"""
         return self.component_of[v]
 
@@ -60,19 +60,19 @@ class GraphStrongConnectivity:
             strong_components[id].append(index)
         return f'Strong components: {strong_components}'
 
-    def count(self):
+    def count(self) -> int:
         """Returns the number of distinct components"""
         return self.component_count
 
-    def id(self, v):
+    def id(self, v) -> int:
         """Returns the connected component id for a given vertex"""
         return self.component_id[v]
 
-    def strongly_connected(self, v, w):
+    def strongly_connected(self, v, w) -> bool:
         """Returns True if v and w are strongly connected, else False"""
         return self.component_id[v] == self.component_id[w]
 
-    def _dfs_with_component_marking(self, v):
+    def _dfs_with_component_marking(self, v: int):
         # perform dfs and map vertices to components
         self.visited_vertices[v] = True
         self.component_id[v] = self.component_count
@@ -81,7 +81,7 @@ class GraphStrongConnectivity:
                 self._dfs_with_component_marking(w)
         return
 
-    def _dfs_reverse_graph_with_postorder_tracking(self, v):
+    def _dfs_reverse_graph_with_postorder_tracking(self, v: int):
         # perform dfs on reverse graph and track postorder of visited vertices
         self.visited_vertices[v] = True
         for w in self.graph.adj_reversed(v):

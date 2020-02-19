@@ -6,8 +6,9 @@ from src.graphs.operations.graph_topological_sort import topologically_sort
 
 
 class Digraph:
-    def __init__(self, vertex_count):
-        """Implements a digraph
+    def __init__(self, vertex_count: int):
+        """Implements a digraph, represented
+        as an adjacency list and vertices as intergers.
         that supports self loops but not parallel edges
         """
         self.vertex_count = vertex_count
@@ -24,29 +25,29 @@ class Digraph:
         self.adj_list[v].add(w)
         self.adj_list_reversed[w].add(v)
 
-    def adj(self, v):
+    def adj(self, v: int) -> list:
         """Returns a list of vertices adjacent to v"""
         return list(self.adj_list[v])
 
-    def adj_reversed(self, v):
+    def adj_reversed(self, v: int) -> list:
         """Returns a list of vertices adjacent to v in reversed digraph"""
         return list(self.adj_list_reversed[v])
 
-    def e(self):
+    def e(self) -> int:
         """Returns number of edges"""
         return reduce(lambda a, b: a + len(b), self.adj_list, 0)
 
-    def edge_between(self, v, w):
+    def edge_between(self, v: int, w: int) -> bool:
         """Returns True if there is an edge from v to w, else False"""
         return w in self.adj_list[v]
 
-    def edge_between_reversed(self, v, w):
+    def edge_between_reversed(self, v: int, w: int) -> bool:
         """Returns True if there is an edge from v to w in reversed digraph,
         else False
         """
         return w in self.adj_list_reversed[v]
 
-    def v(self):
+    def v(self) -> int:
         """Returns number of vertices"""
         return self.vertex_count
 

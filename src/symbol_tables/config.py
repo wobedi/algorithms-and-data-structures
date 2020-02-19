@@ -3,7 +3,6 @@ chaining = {
     'LOAD_FACTOR_MAX': 1,
     'DOWNSIZE_FACTOR': 0.5,
     'UPSIZE_FACTOR': 2
-
 }
 
 probing = {

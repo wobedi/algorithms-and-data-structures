@@ -1,4 +1,4 @@
-def topologically_sort(graph):
+def topologically_sort(graph) -> [int]:
     """Implements
     https://en.wikipedia.org/wiki/Topological_sorting#Depth-first_search
     Returns topologically sorted list of vertices in adj list.

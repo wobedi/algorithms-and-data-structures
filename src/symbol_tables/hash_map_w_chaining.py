@@ -9,7 +9,7 @@ class HashMap:
     for collision resolution
     """
 
-    def __init__(self, size):
+    def __init__(self, size: int):
         # list of lists implements chaining
         self.size = size
         self.table = [[] for i in range(size)]
@@ -57,7 +57,7 @@ class HashMap:
                 print(f'Deleted key {key} from table')
                 return True
 
-    def _modular_hash(self, key):
+    def _modular_hash(self, key) -> int:
         # hashing key and using modulo operator to wrap it into self.size
         return hash(key) % self.size
 

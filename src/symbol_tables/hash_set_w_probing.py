@@ -11,7 +11,7 @@ class HashSet:
         self.set = [None for i in range(size)]
         self.load = 0
 
-    def contains(self, key):
+    def contains(self, key) -> bool:
         """Returns True if key is in hash set, else False"""
         return self._linear_probing(key)[0]
 
@@ -45,7 +45,7 @@ class HashSet:
             self._downsize()
         return
 
-    def _linear_probing(self, key, set_=None):
+    def _linear_probing(self, key, set_=None) -> bool, int:
         """Linear probing for key through hash set.
         Returns tuple:
         (True, index) for search hits at index,
@@ -63,7 +63,7 @@ class HashSet:
             index += 1
         return (False, index)
 
-    def _modular_hash(self, key):
+    def _modular_hash(self, key) -> int:
         # hashing key and using modulo operator to wrap it into self.size
         return hash(key) % self.size
 

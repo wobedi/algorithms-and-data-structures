@@ -56,7 +56,7 @@ class SuffixTrie:
             return False
         return self.terminal_char in node
 
-    def _dfs(self, node: {}, count: [int]):
+    def _dfs(self, node: {}, count: [int]) -> int:
         # depth-first search for a node, counting its number of occurences
         if self.terminal_char in node:
             count[0] += 1
@@ -79,7 +79,7 @@ def _input_validation(func):
     """Wrapper that ensures that terminal char is not in pattern.
     Only works for unary functions whose single argument is pattern.
     """
-    def wrapped_input_validation(self, pattern):
+    def wrapped_input_validation(self, pattern: str):
         if self.terminal_char in pattern:
             raise (f'Terminal_char {self.terminal_char}'
                    f'must not be in input pattern')

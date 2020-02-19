@@ -17,7 +17,7 @@ class RedBlackTree:
         """Currently not implemented"""
         pass
 
-    def _get(self, node, key):
+    def _get(self, node: _RBNode, key) -> _RBNode | False:
         # Iteratively traverse tree in search of key
         while node is not None:
             if key == node.key:
@@ -28,12 +28,12 @@ class RedBlackTree:
                 node = node.right
         return False
 
-    def _put(self, node, key, value):
+    def _put(self, node: _RBNode, key, value) -> _RBNode:
         """Recursively upsert key:value
         while maintaining Red-black BST invariants.
         """
         if node is None:
-            return self._Node(key, value, isRed=True)
+            return _RBNode(key, value, isRed=True)
         elif key == node.key:
             node.value = value
         elif key < node.key:
@@ -56,7 +56,7 @@ class RedBlackTree:
             self._flip_colors(node)
         return node
 
-    def _rotate_left(self, parent):
+    def _rotate_left(self, parent: _RBNode) -> _RBNode:
         # Fixes right-leaning red link to maintain the following invariant:
         # No right-leaning red links
         assert parent.right.isRed is True
@@ -68,7 +68,7 @@ class RedBlackTree:
         parent.isRed = True
         return new_parent
 
-    def _rotate_right(self, parent):
+    def _rotate_right(self, parent: _RBNode) -> _RBNode:
         # Fixes two red links in a row to maintain the following invariant:
         # Perfect black balance (same black link distance to all leaves)
         assert parent.left.isRed is True
@@ -79,7 +79,7 @@ class RedBlackTree:
         parent.isRed = True
         return new_parent
 
-    def _flip_colors(self, parent):
+    def _flip_colors(self, parent: _RBNode):
         # Fixes parent with two red child links to maintain the invariant:
         # Not more than two keys per (implicit) 2-3 node
         assert parent.left.isRed == parent.right.isRed is True
@@ -88,7 +88,7 @@ class RedBlackTree:
         return
 
 
-class _Node:
+class _RBNode:
     """Implements a Binary Node with additional color bit"""
     def __init__(self, key, value, isRed, left=None, right=None):
         self.key, self.value = key, value

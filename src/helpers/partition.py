@@ -1,4 +1,4 @@
-def three_way_partition(arr: list, lower: int, upper: int):
+def three_way_partition(arr: list, lower: int, upper: int) -> int, int:
     """In-place partitioning of arr. Implements:
     https://en.wikipedia.org/wiki/Dutch_national_flag_problem#The_array_case
     """

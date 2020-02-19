@@ -12,12 +12,12 @@ class BinarySearchTree:
         node = self._get(key)
         return node.value if node else False
 
-    def put(self, key, value):
+    def put(self, key, value) -> _BinaryNode:
         """Inserts key:value into tree, returns pointer to upserted node"""
         self.root = self._put(self.root, key, value)
         return self.upserted_node
 
-    def delete(self, key):
+    def delete(self, key) -> None | False:
         """Deletes key from tree. Returns None if successful, False if not."""
         if self.root is None:
             return False
@@ -29,7 +29,7 @@ class BinarySearchTree:
             return False
         self.root = self._del_min(self.root)
 
-    def min(self, node=None):
+    def min(self, node=None) -> _BinaryNode | None:
         """Return node with smallest key, leveraging symmetric order of tree"""
         node = node or self.root
         while True:
@@ -38,8 +38,8 @@ class BinarySearchTree:
             else:
                 node = node.left
 
-    def max(self, node=None):
-        """Return node with largest key, leveraging symmetric order of tree"""
+    def max(self, node=None) -> _BinaryNode | None:
+        """Returns node with largest key, leveraging symmetric order of tree"""
         node = node or self.root
         while True:
             if node.right is None:
@@ -47,17 +47,17 @@ class BinarySearchTree:
             else:
                 node = node.right
 
-    def is_empty(self, key):
+    def is_empty(self, key) -> bool:
         """Returns True if tree is empty, else False"""
         return self.root is not None
 
-    def keys(self):
+    def keys(self) -> list:
         """Returns an iterable of all keys of the tree"""
         q = []
         self.traverse(self.root, q, 'inorder')
         return q
 
-    def traverse(self, node, queue, order):
+    def traverse(self, node: _BinaryNode, queue: [], order: str):
         """Traverses the tree in pre-, in-, or postorder
         and stores value in queue
         """
@@ -70,7 +70,7 @@ class BinarySearchTree:
         self.traverse(node.right, queue, order)
         queue.append(node.key) if order == 'postorder' else None
 
-    def _get(self, key):
+    def _get(self, key) -> _BinaryNode | False:
         # iteratively search for key in tree
         node = self.root
         while node is not None:
@@ -82,7 +82,7 @@ class BinarySearchTree:
                 node = node.left
         return False
 
-    def _put(self, node, key, value):
+    def _put(self, node: _BinaryNode, key, value) -> _BinaryNode:
         # recursively put key:value pair into tree
         if node is None:
             self.upserted_node = self._Node(key, value)
@@ -96,7 +96,7 @@ class BinarySearchTree:
             self.upserted_node = node
         return node
 
-    def _delete(self, node, key):
+    def _delete(self, node: _BinaryNode, key) -> _BinaryNode | None:
         """Implements
         https://en.wikipedia.org/wiki/Binary_search_tree#Deletion
         """
@@ -120,7 +120,7 @@ class BinarySearchTree:
             node.left = self._delete(node.left, key)
         return node
 
-    def _del_min(self, node):
+    def _del_min(self, node: _BinaryNode) -> _BinaryNode:
         # traverses tree to the left until leaf node is reached
         if node.left is None:
             return node.right
@@ -130,7 +130,9 @@ class BinarySearchTree:
 
 class _BinaryNode:
     """Implements a binary tree node"""
-    def __init__(self, key, value, left=None, right=None):
+    def __init__(self, key, value,
+                 left: _BinaryNode = None,
+                 right: _BinaryNode = None):
         self.key, self.value = key, value
         self.left, self.right = left, right
 

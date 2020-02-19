@@ -6,9 +6,10 @@ from src.graphs.operations.graph_shortest_path import GraphShortestPath
 
 class DigraphWeighted:
     """Implements a digraph with weighted edges, represented
-    as an adjacency list. Supports parallel edges and self loops.
+    as an adjacency list and vertices as intergers.
+    Supports parallel edges and self loops.
     """
-    def __init__(self, vertex_count):
+    def __init__(self, vertex_count: int):
         self.vertex_count = vertex_count
         self.adj_list = [set() for v in range(vertex_count)]
 
@@ -22,23 +23,23 @@ class DigraphWeighted:
         """Adds edge from v to w"""
         self.adj_list[e.from_()].add(e)
 
-    def adj(self, v):
+    def adj(self, v: int) -> list:
         """Returns edges from v"""
         return [edge for edge in self.adj_list[v]]
 
-    def edge_between(self, v, w):
+    def edge_between(self, v: int, w: int) -> bool:
         """Returns True if there is an edge from v to w, else False"""
         return reduce(lambda a, b: a | b.to() == w, self.adj_list, False)
 
-    def edges(self):
+    def edges(self) -> list:
         """Returns iterable of edges"""
         return [e for s in self.adj_list for e in s]
 
-    def e(self):
+    def e(self) -> int:
         """Returns number of edges"""
         return reduce(lambda a, b: a + len(b), self.adj_list, 0)
 
-    def v(self):
+    def v(self) -> int:
         """Returns number of vertices"""
         return len(self.adj_list)
 

@@ -1,4 +1,4 @@
-def selection_sort(arr):
+def selection_sort(arr: list) -> list:
     """Sorts arr in-place by implementing
     https://en.wikipedia.org/wiki/Selection_sort
     """
@@ -11,7 +11,7 @@ def selection_sort(arr):
     return arr
 
 
-def insertion_sort(arr, increment=1):
+def insertion_sort(arr: list, increment=1) -> list:
     """Sorts arr in-place in by implementing
     https://en.wikipedia.org/wiki/Insertion_sort
     """
@@ -24,16 +24,17 @@ def insertion_sort(arr, increment=1):
     return arr
 
 
-def shell_sort(arr):
+def shell_sort(arr: list) -> list:
     """Sorts arr in-place by implementing
     https://en.wikipedia.org/wiki/Shellsort
     """
     seq = reversed(list(knuth_sequence(len(arr))))
     for increment in seq:
         insertion_sort(arr, increment=increment)
+    return arr
 
 
-def knuth_sequence(arr_len):
+def knuth_sequence(arr_len: int): Generator[int]:
     """Generates sequence as per https://oeis.org/A003462
     until arr_len is hit
     """

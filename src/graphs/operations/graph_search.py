@@ -3,7 +3,7 @@ class GraphSearch:
     to all other vertices that are connected to this source vertex.
     This allows the lookup of paths in O(L) where L is the length of the path.
     """
-    def __init__(self, graph, source_vertex):
+    def __init__(self, graph, source_vertex: int):
         self.graph = graph
         self.source = source_vertex
         self.count = graph.v()
@@ -12,15 +12,15 @@ class GraphSearch:
         self.cycle = []
         self._dfs(source_vertex)  # Could be replaced with bfs or iterative dfs
 
-    def is_acyclic(self):
+    def is_acyclic(self) -> bool:
         """Returns True if graph is acyclic, else False"""
         return bool(self.cycle)
 
-    def source_has_path_to(self, v):
+    def source_has_path_to(self, v: int) -> bool:
         """Returns True if there is a path from source to v, else False"""
         return self.visited[v]
 
-    def source_path_to(self, v):
+    def source_path_to(self, v: int) -> list:
         """Returns the path from source to v if there is one, else []"""
         if not self.source_has_path_to(v):
             return []
@@ -47,7 +47,7 @@ class GraphSearch:
                     self.parent[w] = v
                     queue.append(w)
 
-    def _dfs(self, v):
+    def _dfs(self, v: int):
         # Depth-first search, recursively
         self.visited[v] = True
         for w in self.graph.adj(v):

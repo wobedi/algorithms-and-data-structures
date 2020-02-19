@@ -6,7 +6,7 @@ class GraphShortestPath:
     """Preprocesses a weighted digraph to get the shortest path
     from a source vertex to any other vertex in constant time
     """
-    def __init__(self, graph, source):
+    def __init__(self, graph, source: int):
         self.graph = graph
         self.source = source
         self.parent = [None for v in range(graph.v())]
@@ -15,11 +15,11 @@ class GraphShortestPath:
         self.heap = []
         self._dijkstras_shortest_path()
 
-    def source_distance_to(self, v):
+    def source_distance_to(self, v: int) -> int:
         """Returns the distance (total weight) from source to v"""
         return self.dist_to[v]
 
-    def source_shortest_path_to(self, v):
+    def source_shortest_path_to(self, v) -> list:
         """Returns an iterable of the path from source to v"""
         path = [v]
         parent = self.parent[v]

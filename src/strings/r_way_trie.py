@@ -41,7 +41,7 @@ class RWayTrie:
         self._throw_if_out_of_radix(s)
         self._delete(s, 0, self.root)
 
-    def longest_prefix_of(self, s: str):
+    def longest_prefix_of(self, s: str) -> str:
         """Returns longest prefix of s in trie"""
         res = ''
         node = self.root
@@ -53,13 +53,13 @@ class RWayTrie:
             node = node.next[code]
         return res
 
-    def keys(self, node=None):
+    def keys(self, node=None) -> list:
         """Returns an iterable of all keys in trie"""
         res = []
         self._keys(node or self.root, '', res)
         return res
 
-    def keys_with_prefix(self, p: str):
+    def keys_with_prefix(self, p: str) -> list:
         """Returns all keys with prefix p that are in Trie"""
         node = self.root
         for c in p:
@@ -70,7 +70,7 @@ class RWayTrie:
             node = node.next[code]
         return [p + s for s in self.keys(node)]
 
-    def _delete(self, string: str, index: int, node):
+    def _delete(self, string: str, index: int, node: _RWayTriNode):
         # base condition I: reached end of string and am still in trie
         if index == len(string):
             node.value = None
@@ -111,7 +111,6 @@ class RWayTrie:
             raise ValueError(f'String "{s}" includes characters which '
                              f'encode to value outside of radix range'
                              f'{self.radix}')
-        return
 
 
 class _RWayTriNode:
