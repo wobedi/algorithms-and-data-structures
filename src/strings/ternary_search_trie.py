@@ -1,11 +1,3 @@
-class TernarySearchTrieNode:
-    """Implements a TST node, storing a char, a label and three pointers"""
-    def __init__(self, c: str, label=None):
-        self.c = c
-        self.label = label
-        self.left = self.down = self.right = None
-
-
 class TernarySearchTrie:
     """Implements https://en.wikipedia.org/wiki/Ternary_search_tree"""
     def __init__(self):
@@ -23,7 +15,7 @@ class TernarySearchTrie:
         """Delete string s from trie"""
         self.root = self._delete(s, 0, self.root)
 
-    def _get(self, s: str, i: int, node: TernarySearchTrieNode):
+    def _get(self, s: str, i: int, node: _TernarySearchTrieNode):
         """Recursively traverse trie to find string s"""
         c = s[i]
         if node is None:
@@ -43,11 +35,11 @@ class TernarySearchTrie:
             print(f'String {s} is not in trie')
             return False
 
-    def _put(self, s: str, i: int, label, node: TernarySearchTrieNode):
+    def _put(self, s: str, i: int, label, node: _TernarySearchTrieNode):
         """Recursively upsert string s with label into trie"""
         c = s[i]
         if node is None:
-            node = TernarySearchTrieNode(c)
+            node = _TernarySearchTrieNode(c)
 
         if c < node.c:
             node.left = self._put(s, i, label, node.left)
@@ -60,7 +52,7 @@ class TernarySearchTrie:
 
         return node
 
-    def _delete(self, s: str, i: int, node: TernarySearchTrieNode):
+    def _delete(self, s: str, i: int, node: _TernarySearchTrieNode):
         """Recursively delete string s from trie, including cleaning up trie"""
         c = s[i]
         if node is None:
@@ -79,6 +71,14 @@ class TernarySearchTrie:
         return (None
                 if not node.left and not node.down and not node.right
                 else node)
+
+
+class _TernarySearchTrieNode:
+    """Implements a TST node, storing a char, a label and three pointers"""
+    def __init__(self, c: str, label=None):
+        self.c = c
+        self.label = label
+        self.left = self.down = self.right = None
 
 
 if __name__ == '__main__':

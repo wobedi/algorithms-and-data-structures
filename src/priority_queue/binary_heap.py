@@ -21,7 +21,7 @@ class BinaryHeap:
         """Turns a given array (if provided) into a 1-indexed binary heap"""
         if self.size() <= 1:
             return
-        i = self.size() // 2    # first node from the end who has children
+        i = self.size() // 2  # first node from the end who has children
         while i > 0:
             self._sink(i)
             i -= 1
@@ -34,7 +34,7 @@ class BinaryHeap:
 
     def is_empty(self):
         """Returns True if heap is empty, else False"""
-        return len(self.keys) <= 1    # because keys[0] is empty
+        return len(self.keys) <= 1  # because keys[0] is empty
 
     def max(self):
         """Returns the maximum value at the top of the heap if there is one"""
@@ -42,7 +42,7 @@ class BinaryHeap:
 
     def size(self):
         """Returns the number of values stored ni the heap"""
-        return len(self.keys) - 1    # -1 because keys[0] is empty
+        return len(self.keys) - 1  # -1 because keys[0] is empty
 
     def values(self):
         """Returns an iterable of all values in the heap"""

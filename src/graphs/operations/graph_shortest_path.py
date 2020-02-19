@@ -15,6 +15,10 @@ class GraphShortestPath:
         self.heap = []
         self._dijkstras_shortest_path()
 
+    def source_distance_to(self, v):
+        """Returns the distance (total weight) from source to v"""
+        return self.dist_to[v]
+
     def source_shortest_path_to(self, v):
         """Returns an iterable of the path from source to v"""
         path = [v]
@@ -23,10 +27,6 @@ class GraphShortestPath:
             path.append(parent)
             parent = self.parent[parent]
         return list(reversed(path))
-
-    def source_distance_to(self, v):
-        """Returns the distance (total weight) from source to v"""
-        return self.dist_to[v]
 
     def _relax(self, e):
         """Relaxes the edge from v to w if possible"""

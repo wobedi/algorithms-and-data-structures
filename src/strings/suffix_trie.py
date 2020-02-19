@@ -1,15 +1,3 @@
-def _input_validation(func):
-    """Wrapper that ensures that terminal char is not in pattern.
-    Only works for unary functions whose single argument is pattern.
-    """
-    def wrapped_input_validation(self, pattern):
-        if self.terminal_char in pattern:
-            raise (f'Terminal_char {self.terminal_char}'
-                   f'must not be in input pattern')
-        return func(self, pattern)
-    return wrapped_input_validation
-
-
 class SuffixTrie:
     """Implements a suffix trie that enables O(L) substring search
     where L is the length of the substring.
@@ -60,14 +48,6 @@ class SuffixTrie:
         # counter is wrapped in list to pass by reference rather than by value
         return self._dfs(node, [0])
 
-    def _dfs(self, node: {}, count: [int]):
-        # depth-first search for a node, counting its number of occurences
-        if self.terminal_char in node:
-            count[0] += 1
-        for (_, child) in node.items():
-            self._dfs(child, count)
-        return count[0]
-
     @_input_validation
     def is_suffix_of_T(self, pattern: str) -> bool:
         """Returns True if pattern is a suffix of self.T, else False"""
@@ -75,6 +55,14 @@ class SuffixTrie:
         if not node:
             return False
         return self.terminal_char in node
+
+    def _dfs(self, node: {}, count: [int]):
+        # depth-first search for a node, counting its number of occurences
+        if self.terminal_char in node:
+            count[0] += 1
+        for (_, child) in node.items():
+            self._dfs(child, count)
+        return count[0]
 
     @_input_validation
     def _find_last_node_of(self, pattern: str) -> {}:
@@ -85,6 +73,18 @@ class SuffixTrie:
                 return None
             node = node[c]
         return node
+
+
+def _input_validation(func):
+    """Wrapper that ensures that terminal char is not in pattern.
+    Only works for unary functions whose single argument is pattern.
+    """
+    def wrapped_input_validation(self, pattern):
+        if self.terminal_char in pattern:
+            raise (f'Terminal_char {self.terminal_char}'
+                   f'must not be in input pattern')
+        return func(self, pattern)
+    return wrapped_input_validation
 
 
 if __name__ == '__main__':

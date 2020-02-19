@@ -18,6 +18,17 @@ class HashMap:
     def __str__(self):
         return f'{self.table} | size: {self.size} | load: {self.load}'
 
+    def get(self, key):
+        """Returns value of key in hash map if key in hash map, else False"""
+        row = self.table[self._modular_hash(key)]
+        if len(row) < 0:
+            print(f'\nKey {key} not in table')
+            return False
+        for tup in row:
+            if tup[0] == key:
+                print(tup[1])
+                return tup[1]
+
     def put(self, key, value):
         """Puts key:value into hash map, resizing underlying table if needed"""
         row = self.table[self._modular_hash(key)]
@@ -30,17 +41,6 @@ class HashMap:
         if self.load / self.size >= config.chaining['LOAD_FACTOR_MAX']:
             self._upsize()
         return
-
-    def get(self, key):
-        """Returns value of key in hash map if key in hash map, else False"""
-        row = self.table[self._modular_hash(key)]
-        if len(row) < 0:
-            print(f'\nKey {key} not in table')
-            return False
-        for tup in row:
-            if tup[0] == key:
-                print(tup[1])
-                return tup[1]
 
     def delete(self, key):
         """Deletes key from hash map. Returns True if successful, else False"""

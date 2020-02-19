@@ -3,17 +3,19 @@ class RedBlackTree:
     def __init__(self):
         self.root = None
 
-    class Node:
-        """Implements a Binary Node with additional color bit"""
-        def __init__(self, key, value, isRed, left=None, right=None):
-            self.key, self.value = key, value
-            self.left, self.right = left, right
-            self.isRed = isRed
-
     def get(self, key):
         """Returns value of key if key in tree, else False"""
         node = self._get(self.root, key)
         return (node.value if node else False)
+
+    def put(self, key, value):
+        """Upserts key:value into tree"""
+        self.root = self._put(self.root, key, value)
+        self.root.isRed = False
+
+    def delete(self, key):
+        """Currently not implemented"""
+        pass
 
     def _get(self, node, key):
         # Iteratively traverse tree in search of key
@@ -26,17 +28,12 @@ class RedBlackTree:
                 node = node.right
         return False
 
-    def put(self, key, value):
-        """Upserts key:value into tree"""
-        self.root = self._put(self.root, key, value)
-        self.root.isRed = False
-
     def _put(self, node, key, value):
         """Recursively upsert key:value
         while maintaining Red-black BST invariants.
         """
         if node is None:
-            return self.Node(key, value, isRed=True)
+            return self._Node(key, value, isRed=True)
         elif key == node.key:
             node.value = value
         elif key < node.key:
@@ -58,10 +55,6 @@ class RedBlackTree:
                 and node.right and node.right.isRed):
             self._flip_colors(node)
         return node
-
-    def _delete(self, key):
-        """Currently not implemented"""
-        pass
 
     def _rotate_left(self, parent):
         # Fixes right-leaning red link to maintain the following invariant:
@@ -93,3 +86,11 @@ class RedBlackTree:
         parent.left.isRed = parent.right.isRed = False
         parent.isRed = True
         return
+
+
+class _Node:
+    """Implements a Binary Node with additional color bit"""
+    def __init__(self, key, value, isRed, left=None, right=None):
+        self.key, self.value = key, value
+        self.left, self.right = left, right
+        self.isRed = isRed
