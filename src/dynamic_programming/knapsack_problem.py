@@ -12,7 +12,6 @@ def ks_recursive(weights: [int], values: [int], capacity: int) -> int:
 
 
 def _ks_recursive(weights: [int], values: [int], i: int, w: int) -> int:
-    # base cases
     if i <= 0 or w <= 0:
         return 0
 
@@ -33,7 +32,7 @@ def ks_bottom_up(weights: [int], values: [int], capacity: int):
     cache = [[0 for _ in range(capacity+1)] for _ in range(len(values))]
     keep = [[0 for _ in range(capacity+1)] for _ in range(len(values))]
 
-    # populating cache with max_value per itembase x capacity combo
+    # Populating cache with max_value per itembase X capacity combo
     for w in range(1, capacity+1):
         for i in range(1, len(values)):
             if weights[i-1] > capacity:
@@ -44,7 +43,7 @@ def ks_bottom_up(weights: [int], values: [int], capacity: int):
                 keep[i][w] = 1 if pack_item > leave_item else 0
                 cache[i][w] = max(leave_item, pack_item)
 
-    # identifying packed items based on cache
+    # Identifying packed items based on cache
     items = []
     k = capacity
     for i in range(len(weights)-1, 0, -1):
@@ -61,7 +60,6 @@ if __name__ == '__main__':
     capacity = 20
     print(ks_recursive(weights, values, capacity))
     print('\n')
-    # remove cross-functional dependency of zero-padding here
     cache, items = ks_bottom_up(weights, values, capacity)
     print(DataFrame(cache))
     print('**************')

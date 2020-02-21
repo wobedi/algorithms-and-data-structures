@@ -10,7 +10,7 @@ class HashMap:
     """
 
     def __init__(self, size: int):
-        # list of lists implements chaining
+        # List of lists implements chaining
         self.size = size
         self.table = [[] for i in range(size)]
         self.load = 0
@@ -58,19 +58,19 @@ class HashMap:
                 return True
 
     def _modular_hash(self, key) -> int:
-        # hashing key and using modulo operator to wrap it into self.size
+        # Hashing key and using modulo operator to wrap it into self.size
         return hash(key) % self.size
 
     def _downsize(self):
-        # downsize underlying array (allocate less memory)
+        # Downsize underlying array (allocate less memory)
         return self._resize(config.chaining['DOWNSIZE_FACTOR'])
 
     def _upsize(self):
-        # upsize underlying array (allocate more memory)
+        # Upsize underlying array (allocate more memory)
         return self._resize(config.chaining['UPSIZE_FACTOR'])
 
     def _resize(self, factor: float):
-        # resize underlying array by factor:float
+        # Resize underlying array by factor:float
         self.size = int(self.size * factor)
         aux_table = [[] for i in range(self.size)]
         for row in self.table:

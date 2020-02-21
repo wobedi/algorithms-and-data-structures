@@ -10,14 +10,14 @@ def radix_sort_LSD(string_list: [str], string_length: int, radix=256) -> [str]:
     for c in range(string_length-1, -1, -1):
         count = [0 for _ in range(radix + 1)]
         for string in string_list:
-            # key-indexed counting
+            # Key-indexed counting
             code_point = ord(string[c])
             count[code_point + 1] += 1
         for r in range(radix):
-            # making count cumulative
+            # Making count cumulative
             count[r+1] += count[r]
         for string in string_list:
-            # key-indexed sorting
+            # Key-indexed sorting
             code_point = ord(string[c])
             aux[count[code_point]] = string
             count[code_point] += 1

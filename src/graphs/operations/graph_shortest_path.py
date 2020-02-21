@@ -31,13 +31,12 @@ class GraphShortestPath:
     def _relax(self, e):
         """Relaxes the edge from v to w if possible"""
         v, w = e.from_(), e.to()
-        # skipping already dealt-with vertices here
-        # would improve performance.
+        # Could improve performance by skipping already-dealt-with vertices
         if self.dist_to[w] > self.dist_to[v] + e.weight:
             self.parent[w] = v
             self.dist_to[w] = self.dist_to[v] + e.weight
+            # Could significantly improve performance by
             # adding decrease-key here
-            # would significantly improve performance.
             heapq.heappush(self.heap, (self.dist_to[w], w))
 
     def _dijkstras_shortest_path(self):

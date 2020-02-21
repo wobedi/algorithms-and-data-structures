@@ -10,7 +10,7 @@ class GraphSearch:
         self.visited = [False for v in range(graph.v())]
         self.parent = [None for v in range(graph.v())]
         self.cycle = []
-        self._dfs(source_vertex)  # Could be replaced with bfs or iterative dfs
+        self._dfs(source_vertex)  # bfs would also work
 
     def is_acyclic(self) -> bool:
         """Returns True if graph is acyclic, else False"""

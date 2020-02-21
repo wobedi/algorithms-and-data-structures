@@ -30,7 +30,7 @@ def lcs_length_bottom_up(a: str, b: str) -> int, [[int]]:
     Returns both the length of the LCS as well as the full cache for
     subsequent derivation of the actual LCS by lcs_from_length_cache().
     """
-    # cache has one extra row and column of zeroes for convenience
+    # Cache has one extra row and column of zeroes for convenience
     cache = [[0 for _ in range(len(b) + 1)] for _ in range(len(a) + 1)]
     for i in range(len(a)-1, -1, -1):
         for j in range(len(b)-1, -1, -1):

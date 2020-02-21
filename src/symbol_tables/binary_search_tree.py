@@ -71,7 +71,7 @@ class BinarySearchTree:
         queue.append(node.key) if order == 'postorder' else None
 
     def _get(self, key) -> _BinaryNode | False:
-        # iteratively search for key in tree
+        # Iteratively search for key in tree
         node = self.root
         while node is not None:
             if key == node.key:
@@ -83,7 +83,7 @@ class BinarySearchTree:
         return False
 
     def _put(self, node: _BinaryNode, key, value) -> _BinaryNode:
-        # recursively put key:value pair into tree
+        # Recursively put key:value pair into tree
         if node is None:
             self.upserted_node = self._Node(key, value)
             return self.upserted_node
@@ -121,7 +121,7 @@ class BinarySearchTree:
         return node
 
     def _del_min(self, node: _BinaryNode) -> _BinaryNode:
-        # traverses tree to the left until leaf node is reached
+        # Traverses tree to the left until leaf node is reached
         if node.left is None:
             return node.right
         node.left = self._del_min(node.left)

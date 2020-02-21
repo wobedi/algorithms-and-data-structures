@@ -3,7 +3,8 @@ def three_way_partition(arr: list, lower: int, upper: int) -> int, int:
     https://en.wikipedia.org/wiki/Dutch_national_flag_problem#The_array_case
     """
     lt, gt, i = lower, upper, lower
-    pivot = arr[lower]  # performance could be improved by using smarter pivot
+    # Performance could be improved by using smarter pivot, e.g. median
+    pivot = arr[lower]
 
     while i <= gt:
         if arr[i] < pivot:

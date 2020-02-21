@@ -28,16 +28,16 @@ class Graph:
 
     def add_edge(self, v: int, w: int):
         """Adds edge between v and w"""
-        # add edge to edge list
+        # Adds edge to edge list
         (self.edge_list.append((v, w))
             if not (v, w) in self.edge_list
             and not (w, v) in self.edge_list
             else None)
 
-        # add edge to adj matrix
+        # Adds edge to adj matrix
         self.adj_matrix[v][w] = self.adj_matrix[w][v] = 1
 
-        # add edge to adj list
+        # Adds edge to adj list
         if not self.edge_between(v, w):
             self.adj_list[v].add(w)
             self.adj_list[w].add(v)
@@ -52,7 +52,7 @@ class Graph:
 
     def edge_between(self, v: int, w: int) -> bool:
         """Returns True if there is an edge between v and w, else False"""
-        # using only adjacency list here to not overcomplicate this code
+        # Using only adjacency list here to not overcomplicate this code
         return w in self.adj_list[v]
 
     def v(self) -> int:
@@ -80,12 +80,12 @@ class Graph:
 
     def _e_from_adj_matrix(self) -> int:
         """Returns number of edges from adj matrix"""
-        # divide by 2 because each edge is represented twice: [v][w] and [w][v]
+        # Divide by 2 because each edge is represented twice: [v][w] and [w][v]
         return reduce(lambda a, b: a + b.count(1), self.adj_matrix, 0) // 2
 
     def _e_from_adj_list(self) -> int:
         """Returns number of edges from adj list"""
-        # divide by 2 because each edge is represented twice: [v][w] and [w][v]
+        # Divide by 2 because each edge is represented twice: [v][w] and [w][v]
         return sum([len(vertex_set) for vertex_set in self.adj_list]) // 2
 
 

@@ -45,7 +45,7 @@ class SuffixTrie:
         node = self._find_last_node_of(pattern)
         if not node:
             return 0
-        # counter is wrapped in list to pass by reference rather than by value
+        # Counter is wrapped in list to pass by reference rather than by value
         return self._dfs(node, [0])
 
     @_input_validation
@@ -57,7 +57,7 @@ class SuffixTrie:
         return self.terminal_char in node
 
     def _dfs(self, node: {}, count: [int]) -> int:
-        # depth-first search for a node, counting its number of occurences
+        # Depth-first search for a node, counting its number of occurrences
         if self.terminal_char in node:
             count[0] += 1
         for (_, child) in node.items():

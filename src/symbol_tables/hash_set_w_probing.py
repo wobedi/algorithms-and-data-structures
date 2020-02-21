@@ -34,9 +34,9 @@ class HashSet:
         self.set[index] = None
         self.load -= 1
 
-        # moving subsequent items backwards to not break linear probing
+        # Moving subsequent items backwards to not break linear probing
         next = index + 1
-        while self.set[next % self.size] is not None:  # wrap around via modulo
+        while self.set[next % self.size] is not None:  # Wrap around via modulo
             self.set[index], self.set[next] = self.set[next], self.set[index]
             index += 1
             next += 1
@@ -53,9 +53,9 @@ class HashSet:
         where index is the final index checked/first index with key==None
         """
         set_ = set_ or self.set
-        index = self._modular_hash(key)    # entry point for linear probing
+        index = self._modular_hash(key)    # Entry point for linear probing
         while set_[index] is not None:
-            if index >= self.size:    # wrap around
+            if index >= self.size:    # Wrap around
                 index = 0
                 continue
             if set_[index] == key:
@@ -64,19 +64,19 @@ class HashSet:
         return (False, index)
 
     def _modular_hash(self, key) -> int:
-        # hashing key and using modulo operator to wrap it into self.size
+        # Hashing key and using modulo operator to wrap it into self.size
         return hash(key) % self.size
 
     def _downsize(self):
-        # downsize underlying array (allocate less memory)
+        # Downsize underlying array (allocate less memory)
         return self._resize(config.probing['DOWNSIZE_FACTOR'])
 
     def _upsize(self):
-        # upsize underlying array (allocate more memory)
+        # Upsize underlying array (allocate more memory)
         return self._resize(config.probing['UPSIZE_FACTOR'])
 
     def _resize(self, factor: float):
-        # resize underlying array by factor:float
+        # Resize underlying array by factor:float
         self.size = int(self.size * factor)
         new_set = [None for i in range(self.size)]
         for key in self.set:

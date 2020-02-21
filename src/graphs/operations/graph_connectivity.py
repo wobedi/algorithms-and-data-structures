@@ -28,8 +28,8 @@ class GraphConnectivity:
         return self.component_of[v]
 
     def _preprocess(self):
-        # would run faster if we add a  tweaked dfs/bfs method to this class
-        # this would mean duplicate dfs/bfs code but one less for loop here
+        # This would run faster with a class-specific dfs/bfs method
+        # This would mean duplicate dfs/bfs code but one less for loop here
         for v in range(self.vertex_count):
             if self.visited[v] is False:
                 self.component_count += 1
@@ -73,7 +73,7 @@ class GraphStrongConnectivity:
         return self.component_id[v] == self.component_id[w]
 
     def _dfs_with_component_marking(self, v: int):
-        # perform dfs and map vertices to components
+        # Perform dfs and map vertices to components
         self.visited_vertices[v] = True
         self.component_id[v] = self.component_count
         for w in self.graph.adj(v):
@@ -82,7 +82,7 @@ class GraphStrongConnectivity:
         return
 
     def _dfs_reverse_graph_with_postorder_tracking(self, v: int):
-        # perform dfs on reverse graph and track postorder of visited vertices
+        # Perform dfs on reverse graph and track postorder of visited vertices
         self.visited_vertices[v] = True
         for w in self.graph.adj_reversed(v):
             if not self.visited_vertices[w]:
@@ -94,7 +94,6 @@ class GraphStrongConnectivity:
         self.visited_vertices = [False for v in range(self.vertex_count)]
 
     def _preprocess(self):
-        # dfs on reverse graph, track (reverse) post order
         for vertex in range(self.vertex_count):
             if not self.visited_vertices[vertex]:
                 self._dfs_reverse_graph_with_postorder_tracking(vertex)

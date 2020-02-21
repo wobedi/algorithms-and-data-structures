@@ -13,7 +13,7 @@ def topologically_sort(graph) -> [int]:
 
 
 def _dfs_with_postorder_tracking(v, graph, visited: list, postorder: list):
-    # perform dfs on reverse graph and track postorder of visited vertices
+    # Perform dfs on reverse graph and track postorder of visited vertices
     visited[v] = True
     for w in graph.adj(v):
         if visited[w]:

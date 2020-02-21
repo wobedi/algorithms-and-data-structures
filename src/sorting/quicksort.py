@@ -18,7 +18,7 @@ def _quick_sort(arr: list, lower: int, upper: int) -> list:
     if upper <= lower:
         return
     if upper - lower < 10:
-        # optimizing performance by using insertion sort for small sub arrays
+        # Optimizing performance by using insertion sort for small sub arrays
         insertion_sort(arr)
     else:
         lt, gt = three_way_partition(arr, lower, upper)

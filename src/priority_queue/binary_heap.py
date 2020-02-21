@@ -21,7 +21,7 @@ class BinaryHeap:
         """Turns a given array (if provided) into a 1-indexed binary heap"""
         if self.size() <= 1:
             return
-        i = self.size() // 2  # first node from the end who has children
+        i = self.size() // 2  # First node from the end who has children
         while i > 0:
             self._sink(i)
             i -= 1
@@ -34,7 +34,7 @@ class BinaryHeap:
 
     def is_empty(self) -> bool:
         """Returns True if heap is empty, else False"""
-        return len(self.keys) <= 1  # because keys[0] is empty
+        return len(self.keys) <= 1  # <=1 because keys[0] is empty
 
     def max(self):
         """Returns the maximum value at the top of the heap if there is one"""
@@ -57,7 +57,7 @@ class BinaryHeap:
         while 2*i < stop:
             j = 2*i
             if j < stop - 1 and self.keys[j] < self.keys[j+1]:
-                j += 1  # ensures that j is index of *larger* child node
+                j += 1  # Ensures that j is index of *larger* child node
             if self.keys[i] >= self.keys[j]:
                 break
             self._swap(i, j)
@@ -83,7 +83,7 @@ if __name__ == '__main__':
     keys = [1, 2, 3, 10, 34, 22, 14, 21, 0]
     keys_sorted = sorted(keys)
 
-    # construction should work for empty and non-empty cases
+    # Construction should work for empty and non-empty cases
     pq = BinaryHeap()
     pq2 = BinaryHeap(keys)
 

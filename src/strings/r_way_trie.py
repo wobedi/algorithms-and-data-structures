@@ -12,7 +12,7 @@ class RWayTrie:
         self._throw_if_out_of_radix(s)
         node = self.root
         for c in s:
-            i = ord(c)    # typecasts char to code_point:int representation
+            i = ord(c)    # Typecasts char to code_point:int representation
             if node.next[i] is None:
                 print(f'Key "{s}" is NOT in trie')
                 return False
@@ -71,7 +71,7 @@ class RWayTrie:
         return [p + s for s in self.keys(node)]
 
     def _delete(self, string: str, index: int, node: _RWayTriNode):
-        # base condition I: reached end of string and am still in trie
+        # Base condition I: reached end of string and am still in trie
         if index == len(string):
             node.value = None
             return self._none_if_node_is_null_else_node(node)
@@ -79,7 +79,7 @@ class RWayTrie:
         next_index = ord(string[index])
         next_node = node.next[next_index]
 
-        # base condition II: trie ends but string has not yet ended
+        # Base condition II: trie ends but string has not yet ended
         if next_node is None:
             return f'Key "{string}" is NOT in trie'
         node.next[next_index] = self._delete(string, index + 1, next_node)
@@ -93,7 +93,7 @@ class RWayTrie:
         return node
 
     def _keys(self, node: _RWayTriNode, prefix: str, result: []):
-        # stores all keys that are children of node in result
+        # Stores all keys that are children of node in result
         if node is None:
             return
         if node.value is not None:
@@ -104,7 +104,7 @@ class RWayTrie:
             i += 1
 
     def _throw_if_out_of_radix(self, s: str):
-        # throws error if string s is out of radix or empty
+        # Throws error if string s is out of radix or empty
         if len(s) < 1:
             raise ValueError('Please provide non-empty string')
         if not all(ord(c) < self.radix for c in s):

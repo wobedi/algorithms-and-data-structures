@@ -5,10 +5,10 @@ from src.priority_queue.binary_heap import BinaryHeap
 
 def heapsort(arr: list) -> list:
     """Implements https://en.wikipedia.org/wiki/Heapsort"""
-    shuffle(arr)    # randomizing for probabilistic performance improvement
+    shuffle(arr)    # Randomizing for probabilistic performance improvement
     heap = BinaryHeap(arr)
 
-    # using 'private' ._swap() and ._sink() methods here, a bit hack-ish.
+    # Using 'private' ._swap() and ._sink() methods here, a bit hack-ish.
     i = len(arr)
     while i > 0:
         heap._swap(1, i)
