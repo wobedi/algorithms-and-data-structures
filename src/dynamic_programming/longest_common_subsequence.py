@@ -59,7 +59,7 @@ if __name__ == '__main__':
     print('#################################################')
     print('### LCS("nematode knowledge", "empty bottle") ###')
     print('#################################################')
-    a, b = "nematode knowledge", "empty bottle"
+    a, b = 'nematode knowledge', 'empty bottle'
     print('RECURSIVE IMPLEMENTATION:')
     start = perf_counter()
     print(lcs_length_recursive('nematode knowledge', 'empty bottle'))

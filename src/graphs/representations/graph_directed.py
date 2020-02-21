@@ -52,7 +52,7 @@ class Digraph:
         return self.vertex_count
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     DG = Digraph(10)
     print(DG)
     DG.add_edge(0, 9)

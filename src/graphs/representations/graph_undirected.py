@@ -89,7 +89,7 @@ class Graph:
         return sum([len(vertex_set) for vertex_set in self.adj_list]) // 2
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     G = Graph(10)
     print(G)
     G.add_edge(0, 9)

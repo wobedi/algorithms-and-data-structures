@@ -8,7 +8,7 @@ def quickselect(arr: list, k: int):
     https://en.wikipedia.org/wiki/Quickselect
     """
     if k > len(arr)-1 or k < 0:
-        raise ValueError(f"k must be in range [0, {len(arr)}) but is {k}")
+        raise ValueError(f'k must be in range [0, {len(arr)}) but is {k}')
     aux = arr.copy()
     random.shuffle(aux)    # Randomizing is ensuring probabilisitic efficiency
     return _quickselect(aux, k, lower=0, upper=len(arr)-1)

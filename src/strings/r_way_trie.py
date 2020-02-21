@@ -122,19 +122,19 @@ class _RWayTriNode:
 
 if __name__ == '__main__':
     T = RWayTrie()
-    TEST_STRINGS = ['appleE', "donkey[]", "garfield123", "garfunkel"]
+    TEST_STRINGS = ['appleE', 'donkey[]', 'garfield123', 'garfunkel']
     print(T)
     T.get('a')
     for s in TEST_STRINGS:
         T.put(s, s)
     for s in TEST_STRINGS:
         assert T.get(s) == s
-    assert set(T.keys()) == {'appleE', "donkey[]", "garfield123", "garfunkel"}
+    assert set(T.keys()) == {'appleE', 'donkey[]', 'garfield123', 'garfunkel'}
     assert T.longest_prefix_of('donkendonuTs') == 'donke'
-    assert set(T.keys_with_prefix('garf')) == {"garfield123", "garfunkel"}
+    assert set(T.keys_with_prefix('garf')) == {'garfield123', 'garfunkel'}
     T.delete('appleE')
     assert T.get('appleE') is False
-    assert set(T.keys()) == {"donkey[]", "garfield123", "garfunkel"}
+    assert set(T.keys()) == {'donkey[]', 'garfield123', 'garfunkel'}
     assert T.get('a') is False
     assert T.get('a') is False
     assert T.get('a') is False

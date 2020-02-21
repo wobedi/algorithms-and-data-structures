@@ -36,7 +36,7 @@ def binary_search_recursive(arr: list, key) -> int:
 
 # import random
 # def test_client():
-#         n = input("Size of random number array:    ")
+#         n = input('Size of random number array:    ')
 
 #         # more elegant way of doing this?
 #         while(n.isdigit() and int(n) < 1 if n.isdigit() else True):
@@ -47,7 +47,7 @@ def binary_search_recursive(arr: list, key) -> int:
 #         array = random.sample(range(n*2), n)
 # # n*2 is arbitrary to make it more interesting
 #         array_sorted = sorted(array)
-#         print(f"Sorted Array: {array_sorted}")
+#         print(f'Sorted Array: {array_sorted}')
 
 #         # AS = ArraySearch(array_sorted)
 

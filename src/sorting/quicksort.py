@@ -9,7 +9,7 @@ def quick_sort(arr: list) -> list:
     by implementing https://en.wikipedia.org/wiki/Quicksort
     """
     shuffle(arr)
-    print("Shuffled: ", arr)
+    print('Shuffled: ', arr)
     return _quick_sort(arr, lower=0, upper=len(arr)-1)
 
 

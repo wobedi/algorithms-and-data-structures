@@ -94,7 +94,7 @@ if __name__ == '__main__':
         assert T.get(s) is True
     T.delete('garfield123')
     assert T.get('garfield123') is False
-    assert T.get("garfunkel") is True
+    assert T.get('garfunkel') is True
     assert T.get('a') is False
     print(T)
 
