@@ -77,37 +77,3 @@ class BinaryHeap:
         else:
             self._swap(parent_i, i)
             return self._swim(parent_i)
-
-
-if __name__ == '__main__':
-    keys = [1, 2, 3, 10, 34, 22, 14, 21, 0]
-    keys_sorted = sorted(keys)
-
-    # Construction should work for empty and non-empty cases
-    pq = BinaryHeap()
-    pq2 = BinaryHeap(keys)
-
-    # .size() and .is_empty() should work for empty and non-empty cases
-    assert pq.size() == 0
-    assert pq2.size() == len(keys)
-    assert pq.is_empty() is True
-    assert pq2.is_empty() is False
-
-    # .max() should work for empty and non-empty cases
-    assert pq.max() is None
-
-    # .max() should still work after deletion
-    # assert del_max(pq) to raise
-    pq2.del_max()
-    assert pq2.max() == keys_sorted[-2]
-    pq2.del_max()
-    assert pq2.max() == keys_sorted[-3]
-
-    # .insert() should work, including subsequent deletions and max() queries
-    for key in keys:
-        pq.insert(key)
-    assert pq.max() == keys_sorted[-1]
-    pq.del_max()
-    assert pq.max() == keys_sorted[-2]
-    pq.del_max()
-    assert pq.max() == keys_sorted[-3]

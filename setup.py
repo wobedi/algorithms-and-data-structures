@@ -7,5 +7,5 @@ setup(
     author='Yanick J. Steinbeck',
     author_email='yanick.steinbeck+githubdsa@gmail.com',
     url='https://github.com/wobedi/algorithms-and-data-structures',
-    packages=find_packages('src')
+    packages=find_packages('algorithms_and_data_structures')
 )
