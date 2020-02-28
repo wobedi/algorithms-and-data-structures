@@ -1,6 +1,3 @@
-from time import perf_counter
-
-
 def fibonacci_recursive(x: int) -> int:
     """Calculates x'th Fibnoacci number in O(2^N) time, O(2^N) space"""
     # ignoring x<=0
@@ -36,38 +33,10 @@ def fibonacci_bottom_up_minified(x: int) -> int:
     # ignoring x<=0
     if x == 1 or x == 2:
         return 1
+    res = 0
     first, second = 1, 2
     for _ in range(4, x + 1):
         res = first + second
         first = second
         second = res
     return res
-
-
-if __name__ == '__main__':
-    print('#####################')
-    print('### FIBONACCI(35) ###')
-    print('#####################')
-    print('RECURSIVE IMPLEMENTATION:')
-    start = perf_counter()
-    print(fibonacci_recursive(35))
-    stop = perf_counter()
-    print(f'Secs: {stop - start}\n')
-
-    print('MEMOIZED IMPLEMENTATION:')
-    start = perf_counter()
-    print(fibonacci_memoized(35, {}))
-    stop = perf_counter()
-    print(f'Secs: {stop - start}\n')
-
-    print('BOTTOM-UP IMPLEMENTATION:')
-    start = perf_counter()
-    print(fibonacci_bottom_up(35, {}))
-    stop = perf_counter()
-    print(f'Secs: {stop - start}\n')
-
-    print('BOTTOM-UP (MINIFIED) IMPLEMENTATION:')
-    start = perf_counter()
-    print(fibonacci_bottom_up_minified(35))
-    stop = perf_counter()
-    print(f'Secs: {stop - start}\n')
