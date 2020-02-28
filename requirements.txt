@@ -1,3 +1,4 @@
+pandas
 perfplot
 pytest
-pytest-benchmark
+pytest-print
