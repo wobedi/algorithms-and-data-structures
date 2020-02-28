@@ -1,26 +1,26 @@
 from pandas import DataFrame
 
 
-def ks_recursive(weights: [int], values: [int], capacity: int) -> int:
+def ks_recursive_weight(weights: [int], values: [int], capacity: int) -> int:
     """Recursive solution for
     https://en.wikipedia.org/wiki/Knapsack_problem#0-1_knapsack_problem
     """
     assert len(weights) == len(values)
     weights.insert(0, 0)
     values.insert(0, 0)
-    return _ks_recursive(weights, values, len(values) - 1, capacity)
+    return _ks_recursive_weight(weights, values, len(values) - 1, capacity)
 
 
-def _ks_recursive(weights: [int], values: [int], i: int, w: int) -> int:
+def _ks_recursive_weight(weights: [int], values: [int], i: int, w: int) -> int:
     if i <= 0 or w <= 0:
         return 0
 
-    if weights[i] > capacity:
-        solution = _ks_recursive(weights[:i], values[:i], i-1, w)
+    if weights[i] > w:
+        solution = _ks_recursive_weight(weights[:i], values[:i], i-1, w)
     else:
-        pack_item = (_ks_recursive(weights[:i], values[:i], i-1, w-weights[i])
+        pack_item = (_ks_recursive_weight(weights[:i], values[:i], i-1, w-weights[i])
                      + values[i])
-        leave_item = _ks_recursive(weights[:i], values[:i], i-1, w)
+        leave_item = _ks_recursive_weight(weights[:i], values[:i], i-1, w)
         solution = max([pack_item, leave_item])
     return solution
 
@@ -52,15 +52,3 @@ def ks_bottom_up(weights: [int], values: [int], capacity: int):
             k -= weights[i]
 
     return cache, items
-
-
-if __name__ == '__main__':
-    weights = [2, 4, 5, 7, 9]
-    values = [3, 5, 6, 8, 10]
-    capacity = 20
-    print(ks_recursive(weights, values, capacity))
-    print('\n')
-    cache, items = ks_bottom_up(weights, values, capacity)
-    print(DataFrame(cache))
-    print('**************')
-    print(items)
