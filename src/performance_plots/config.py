@@ -1,3 +1,4 @@
 SAMPLE_SIZES = {
-  'FIBONACCI': 11
+  'FIBONACCI': 11,
+  'KNAPSACK': 11,
 }
