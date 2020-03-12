@@ -18,8 +18,8 @@ def _ks_recursive_weight(weights: [int], values: [int], i: int, w: int) -> int:
     if weights[i] > w:
         solution = _ks_recursive_weight(weights[:i], values[:i], i-1, w)
     else:
-        pack_item = (_ks_recursive_weight(weights[:i], values[:i], i-1, w-weights[i])
-                     + values[i])
+        pack_item = (_ks_recursive_weight(weights[:i], values[:i], i-1,
+                     w-weights[i]) + values[i])
         leave_item = _ks_recursive_weight(weights[:i], values[:i], i-1, w)
         solution = max([pack_item, leave_item])
     return solution
@@ -50,5 +50,7 @@ def ks_bottom_up(weights: [int], values: [int], capacity: int):
         if keep[i][k]:
             items.append(i)
             k -= weights[i]
+        if k < 0:
+            break
 
     return cache, items
