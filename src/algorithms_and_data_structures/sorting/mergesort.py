@@ -1,4 +1,4 @@
-def mergesort_recursive(arr):
+def mergesort_recursive(arr: list) -> list:
     """Sorts arr by implementing
     https://en.wikipedia.org/wiki/Merge_sort#Top-down_implementation
     """

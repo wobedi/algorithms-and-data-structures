@@ -1,3 +1,5 @@
+from typing import Generator
+
 def selection_sort(arr: list) -> list:
     """Sorts arr in-place by implementing
     https://en.wikipedia.org/wiki/Selection_sort
@@ -34,7 +36,7 @@ def shell_sort(arr: list) -> list:
     return arr
 
 
-def knuth_sequence(arr_len: int): Generator[int]:
+def knuth_sequence(arr_len: int) -> Generator[int, None, None]:
     """Generates sequence as per https://oeis.org/A003462
     until arr_len is hit
     """

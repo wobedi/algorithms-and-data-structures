@@ -29,7 +29,7 @@ class DigraphWeighted:
 
     def edge_between(self, v: int, w: int) -> bool:
         """Returns True if there is an edge from v to w, else False"""
-        return reduce(lambda a, b: a | b.to() == w, self.adj_list, False)
+        return reduce(lambda a, b: a | b.to() == w, self.adj_list[v], False)
 
     def edges(self) -> list:
         """Returns iterable of edges"""

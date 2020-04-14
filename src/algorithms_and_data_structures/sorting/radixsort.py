@@ -1,4 +1,4 @@
-def radix_sort_LSD(string_list: [str], string_length: int, radix=256) -> [str]:
+def radixsort_LSD(string_list: [str], string_length: int, radix=256) -> [str]:
     """Sorts a list of strings and returns it.
     Characters are compared by their Unicode order, which can lead to
     unexpected results for e.g. lower- and uppercase characters.
@@ -37,5 +37,5 @@ if __name__ == '__main__':
         'cello',
         'oteee'
     ]
-    print(radix_sort_LSD(string_list, 5))
+    print(radixsort_LSD(string_list, 5))
     # ['Bestr', 'Testr', 'bello', 'brotr', 'cello', 'hello', 'oteee', 'sistr']
