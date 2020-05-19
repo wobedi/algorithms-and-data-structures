@@ -1,6 +1,6 @@
 import pytest
 
-from src.algorithms_and_data_structures.dynamic_programming.fibonacci import (
+from src.implementations.dynamic_programming.fibonacci import (
     fibonacci_recursive, fibonacci_memoized,
     fibonacci_bottom_up, fibonacci_bottom_up_minified
 )

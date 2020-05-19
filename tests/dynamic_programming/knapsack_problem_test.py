@@ -1,7 +1,7 @@
 from pandas import DataFrame
 import pytest
 
-from src.algorithms_and_data_structures.dynamic_programming.knapsack_problem \
+from src.implementations.dynamic_programming.knapsack_problem \
     import ks_recursive_weight, ks_bottom_up
 
 

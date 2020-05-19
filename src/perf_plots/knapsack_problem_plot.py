@@ -2,9 +2,9 @@ from random import randint
 
 import perfplot
 
-from src.algorithms_and_data_structures.dynamic_programming.knapsack_problem \
+from src.implementations.dynamic_programming.knapsack_problem \
   import ks_recursive_weight, ks_bottom_up
-from src.performance_plots.config import SAMPLE_SIZES
+from src.perf_plots.config import SAMPLE_SIZES
 
 SAMPLE_SIZE = SAMPLE_SIZES['KNAPSACK']
 
@@ -25,7 +25,7 @@ if __name__ == '__main__':
         ],
         labels=['recursive', 'bottom_up'],
         xlabel="N weights and values at N*3 capacity",
-        title='Solving 0-1 Knapsack problem',
+        title='Solving the 0-1 Knapsack problem',
         n_range=[n for n in range(1, SAMPLE_SIZE)],
         equality_check=None
     )

@@ -1,10 +1,10 @@
 import perfplot
 
-from src.algorithms_and_data_structures.dynamic_programming.fibonacci import (
+from src.implementations.dynamic_programming.fibonacci import (
     fibonacci_recursive, fibonacci_memoized,
     fibonacci_bottom_up, fibonacci_bottom_up_minified
 )
-from src.performance_plots.config import SAMPLE_SIZES
+from src.perf_plots.config import SAMPLE_SIZES
 
 SAMPLE_SIZE = SAMPLE_SIZES['FIBONACCI']
 

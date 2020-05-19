@@ -1,6 +1,6 @@
 import pytest
 
-from src.algorithms_and_data_structures.priority_queue.binary_heap import (
+from src.implementations.priority_queue.binary_heap import (
     BinaryHeap
 )
 
