@@ -16,7 +16,7 @@ class Deque:
         self.end = (self.end + 1) % len(self.arr)  # modulo to wrap around
         self.load += 1
         print(f'Inserted {el} at index'
-              f'{(self.end - 1 + len(self.arr)) % len(self.arr)}')
+              f' {(self.end - 1 + len(self.arr)) % len(self.arr)}')
         self.check_resize()
 
     def dequeue(self):
@@ -68,26 +68,18 @@ class Deque:
         self.start = 0
         self.end = self.load
         print(f'Resized Deque with factor {factor}'
-              f'to new size {len(self.arr)}')
+              f' to new size {len(self.arr)}')
 
 
 if __name__ == '__main__':
     D = Deque(5)
     print(D)
-    D.enqueue(1)
-    print(D)
-    D.enqueue(2)
-    print(D)
-    D.enqueue(3)
-    print(D)
-    D.enqueue(4)
-    print(D)
-    D.enqueue(5)
-    print(D)
-    D.enqueue(6)
-    print(D)
-    D.enqueue(7)
-    print(D)
+
+    for i in range(8):
+        D.enqueue(i)
+        print(D)
+
+    # Basically simulating a step-debug here for illustration purposes
     D.dequeue()
     print(D)
     D.dequeue()
@@ -120,63 +112,3 @@ if __name__ == '__main__':
     print(D)
     D.pop()
     print(D)
-
-# [None, None, None, None, None]
-# Inserted 1 at index 0
-# Resized Deque with factor 0.5 to new size 2
-# [1, None]
-# Inserted 2 at index 1
-# Resized Deque with factor 2 to new size 4
-# [1, 2, None, None]
-# Inserted 3 at index 2
-# [1, 2, 3, None]
-# Inserted 4 at index 3
-# Resized Deque with factor 2 to new size 8
-# [1, 2, 3, 4, None, None, None, None]
-# Inserted 5 at index 4
-# [1, 2, 3, 4, 5, None, None, None]
-# Inserted 6 at index 5
-# [1, 2, 3, 4, 5, 6, None, None]
-# Inserted 7 at index 6
-# [1, 2, 3, 4, 5, 6, 7, None]
-# Deuqueued 1
-# [None, 2, 3, 4, 5, 6, 7, None]
-# Deuqueued 2
-# [None, None, 3, 4, 5, 6, 7, None]
-# Popped 7
-# [None, None, 3, 4, 5, 6, None, None]
-# Popped 6
-# [None, None, 3, 4, 5, None, None, None]
-# Deuqueued 3
-# Resized Deque with factor 0.5 to new size 4
-# [4, 5, None, None]
-# Deuqueued 4
-# Resized Deque with factor 0.5 to new size 2
-# [5, None]
-# Deuqueued 5
-# Resized Deque with factor 0.5 to new size 1
-# [None]
-# Deque is empty, nothing to dequeue
-# [None]
-# Inserted 1 at index 0
-# Resized Deque with factor 2 to new size 2
-# [1, None]
-# Inserted 2 at index 1
-# Resized Deque with factor 2 to new size 4
-# [1, 2, None, None]
-# Inserted 3 at index 2
-# [1, 2, 3, None]
-# Inserted 4 at index 3
-# Resized Deque with factor 2 to new size 8
-# [1, 2, 3, 4, None, None, None, None]
-# Popped 4
-# [1, 2, 3, None, None, None, None, None]
-# Popped 3
-# Resized Deque with factor 0.5 to new size 4
-# [1, 2, None, None]
-# Popped 2
-# Resized Deque with factor 0.5 to new size 2
-# [1, None]
-# Popped 1
-# Resized Deque with factor 0.5 to new size 1
-# [None]

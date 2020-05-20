@@ -47,3 +47,8 @@ if __name__ == '__main__':
     for (arr, key, result) in test_cases:
         assert binary_search_iterative(arr, key) == result
         assert binary_search_recursive(arr, key) == result
+
+        if result == -1:
+            print(f'Key {key} is not in arr {arr}')
+        else:
+            print(f'Key {key} is in {arr} at index {result}')

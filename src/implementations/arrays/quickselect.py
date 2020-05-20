@@ -1,6 +1,6 @@
 import random
 
-import src.helpers.partition as partition
+import src.implementations.helpers.partition as partition
 
 
 def quickselect(arr: list, k: int):
@@ -26,4 +26,19 @@ def _quickselect(arr: list, k: int, lower: int, upper: int):
 
 
 if __name__ == '__main__':
-    quickselect([1, 2, 3, 4, 5, 6, 7, 8], 2)
+    test_cases: [([int], int, int)] = [
+        ([1, 2, 3, 4, 5, 6], 0, 1),
+        ([6, 5, 4, 3, 2, 1], 0, 1),
+        ([3, 2, 1, 4, 5, 6], 0, 1),
+        ([1, 2, 3, 4, 5, 6], 3, 4),
+        ([6, 5, 4, 3, 2, 1], 3, 4),
+        ([3, 2, 1, 4, 5, 6], 3, 4),
+        ([1, 2, 3, 4, 5, 6], 5, 6),
+        ([6, 5, 4, 3, 2, 1], 5, 6),
+        ([3, 2, 1, 4, 5, 6], 5, 6),
+    ]
+
+    for (arr, k, result) in test_cases:
+        assert quickselect(arr, k) == result
+        assert quickselect(arr, k) == result
+        print(f'The {k}th-smallest element of {arr} is {result}')
