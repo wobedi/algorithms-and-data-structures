@@ -9,8 +9,6 @@
 
 ## Background
 
-![fibonacci-plot_size-11](https://user-images.githubusercontent.com/31690419/83267964-3d761700-a1c5-11ea-961f-a7aaf0d6d559.png)
-
 I am a self-taught software engineer with no formal CS background.
 
 I was already working as a professional web developer but I always felt the urge to learn more about CS fundamentals.
@@ -23,7 +21,9 @@ This repo is the result.
 
 ## Scope
 
-This repo includes implementations of the following algorithms and data structures:
+![Read-Black Binary Search Tree](https://user-images.githubusercontent.com/31690419/83269557-8fb83780-a1c7-11ea-8a89-6d4d2433e502.png)
+
+**This repo includes implementations of the following algorithms and data structures:**
 
 ### Arrays
 
@@ -80,7 +80,9 @@ Each implementation includes a unit test in in its `if __name__ == '__main__'`
 
 ## Performance plots
 
-In addition, this repo also includes performance plots for the following scenarios:
+![fibonacci-plot_size-11](https://user-images.githubusercontent.com/31690419/83267964-3d761700-a1c5-11ea-961f-a7aaf0d6d559.png)
+
+**In addition, this repo also includes performance plots for the following scenarios:**
 
 - Calculating the n-th fiboncacci number (recursively vs. memoized)
 - Solving the 0-1 knapsack problem (recursively vs. memoized)
