@@ -25,47 +25,51 @@ This repo is the result.
 
 This repo includes implementations of the following algorithms and data structures:
 
-- Arrays
+### Arrays
 
-  - Dequeue via a dynamically-sized array with ring buffer
-  - Binary search
-  - Quickselect
+- Dequeue via a dynamically-sized array with ring buffer
+- Binary search
+- Quickselect
 
-- Dynamic Programming
+### Dynamic Programming
 
-  - Calculating the n-th fibonacci number
-  - Solving the 0-1 knapsack problem
-  - Finding the longest common subsequence (LCS) of two strings
+- Calculating the n-th fibonacci number
+- Solving the 0-1 knapsack problem
+- Finding the longest common subsequence (LCS) of two strings
 
-- Graph representations
+### Graph representations
 
-  - Undirected
-  - Directed
-  - Weighted
+- Undirected
+- Directed
+- Weighted
 
-- Graph operations
+### Graph operations
 
-  - Breadth-first search
-  - Depth-first search
-  - Connectivity of two nodes
-  - Shortest path via Dijkstra's algorithm
-  - Topological sort
+- Breadth-first search
+- Depth-first search
+- Connectivity of two nodes
+- Shortest path via Dijkstra's algorithm
+- Topological sort
 
-- LRU Cache
+### Misc
 
-- Priority queue via a binary heap
+- LRU cache
+- Priority queue via binary heap
 
-- Sorting
-  - Basic sorts (selection, insertion, shell)
-  - Mergesort
-  - Heapsort
-  - Quicksort
-  - Radixsort
-- Strings
-  - Huffman encoding
-  - R-way trie
-  - Suffix trie
-  - Ternary search trie
+### Sorting
+
+- Basic sorts (selection, insertion, shell)
+- Mergesort
+- Heapsort
+- Quicksort
+- Radixsort
+
+### Strings
+
+- Huffman encoding
+- R-way trie
+- Suffix trie
+- Ternary search trie
 - Symbol Tables
   - Binary search tree
   - Hash map with separate chaining
@@ -74,7 +78,9 @@ This repo includes implementations of the following algorithms and data structur
 
 Each implementation includes a unit test in in its `if __name__ == '__main__'`
 
-**In addition, this repo also includes performance plots for the following scenarios:**
+## Performance plots
+
+In addition, this repo also includes performance plots for the following scenarios:
 
 - Calculating the n-th fiboncacci number (recursively vs. memoized)
 - Solving the 0-1 knapsack problem (recursively vs. memoized)
