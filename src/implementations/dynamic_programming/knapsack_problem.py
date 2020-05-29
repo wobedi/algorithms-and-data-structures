@@ -54,3 +54,19 @@ def ks_bottom_up(weights: [int], values: [int], capacity: int):
             break
 
     return cache, items
+
+
+if __name__ == '__main__':
+    weights = [2, 4, 5, 7, 9]
+    values = [3, 5, 6, 8, 10]
+    capacity = 20
+    solution_weight = 24
+    solution_items = [5, 3, 2, 1]
+
+    total_weight_of_solution = ks_recursive_weight(weights, values, capacity)
+    assert total_weight_of_solution == solution_weight
+
+    cache, items = ks_bottom_up(weights, values, capacity)
+    print(f'BOTTOM-UP KNAPSACK CACHE:\n{DataFrame(cache)}')
+    assert items == solution_items
+    print('Assertions successful')

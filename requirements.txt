@@ -1,4 +1,2 @@
 pandas
 perfplot
-pytest
-pytest-print

@@ -24,7 +24,7 @@ def _lcs_length_recursive(a: str, b: str, i: int, j: int) -> int:
                ])
 
 
-def lcs_length_bottom_up(a: str, b: str) -> int, [[int]]:
+def lcs_length_bottom_up(a: str, b: str) -> (int, [[int]]):
     """Calculates the length of the longest common subsequence of two strings
     in O(nm) where n an m are the lengths of the strings.
     Returns both the length of the LCS as well as the full cache for
@@ -60,6 +60,7 @@ if __name__ == '__main__':
     print('### LCS("nematode knowledge", "empty bottle") ###')
     print('#################################################')
     a, b = 'nematode knowledge', 'empty bottle'
+
     print('RECURSIVE IMPLEMENTATION:')
     start = perf_counter()
     print(lcs_length_recursive('nematode knowledge', 'empty bottle'))
@@ -74,4 +75,4 @@ if __name__ == '__main__':
     print(f'Length: {length}')
     print(f'LCS: {lcs}')
     print(f'Cache:\n{DataFrame(cache)}')
-    print(f'Secs: {stop - start}\n')
+    print(f'Secs: {stop - start}')
