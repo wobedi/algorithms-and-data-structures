@@ -76,7 +76,7 @@ This repo is the result.
   - Hash map with linear probing
   - Read black binary search tree (proud of this one)
 
-Each implementation includes a unit test in in its `if __name__ == '__main__'`
+Each implementation includes a unit test in its `if __name__ == '__main__'`
 
 ## Performance plots
 
