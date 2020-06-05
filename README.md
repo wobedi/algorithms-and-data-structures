@@ -13,9 +13,7 @@ I am a self-taught software engineer with no formal CS background.
 
 I was already working as a professional web developer but I always felt the urge to learn more about CS fundamentals.
 
-So I embarked on a months-long learning journey, focusing on data structures and algorithms.
-
-I created a study plan and spent nights and weekends learning about and implementing common algorithms and data structures.
+So I created a study plan and spent nights and weekends learning about and implementing common algorithms and data structures.
 
 This repo is the result.
 
@@ -90,9 +88,15 @@ Each implementation includes a unit test in its `if __name__ == '__main__'`
 
 ## Installing it locally
 
-```bash
-git clone
+Clone the repo:
 
+```bash
+git clone https://github.com/wobedi/algorithms-and-data-structures.git
+```
+
+Then run the following commands in your terminal from the project root folder:
+
+```bash
 pip3 install virtualenv
 virtualenv env
 source env/bin/activate
