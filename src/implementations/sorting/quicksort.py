@@ -1,7 +1,7 @@
 from random import shuffle
 
-from src.algorithms_and_data_structures.sorting.basic_sorts import insertion_sort
-from src.algorithms_and_data_structures.helpers.partition import three_way_partition
+from src.implementations.sorting.basic_sorts import insertion_sort
+from src.implementations.helpers.partition import three_way_partition
 
 
 def quicksort(arr: list) -> list:

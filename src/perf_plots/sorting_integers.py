@@ -6,7 +6,7 @@ from src.implementations.sorting.basic_sorts import \
     selection_sort, insertion_sort, shell_sort
 from src.implementations.sorting.heapsort import heapsort
 from src.implementations.sorting.mergesort import \
-mergesort_iterative, mergesort_recursive
+    mergesort_iterative, mergesort_recursive
 from src.implementations.sorting.quicksort import quicksort
 from src.implementations.sorting.radixsort import radixsort_LSD
 from src.perf_plots.config import SAMPLE_SIZES

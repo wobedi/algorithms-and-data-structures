@@ -1,6 +1,6 @@
 from random import shuffle
 
-from src.algorithms_and_data_structures.priority_queue.binary_heap import BinaryHeap
+from src.implementations.priority_queue.binary_heap import BinaryHeap
 
 
 def heapsort(arr: list) -> list:
