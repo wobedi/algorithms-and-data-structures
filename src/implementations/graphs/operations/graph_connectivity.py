@@ -1,4 +1,6 @@
-from src.graphs.operations.graph_search import GraphSearch
+from src.implementations.graphs.representations.graph_undirected import Graph
+from src.implementations.graphs.representations.graph_directed import Digraph
+from src.implementations.graphs.operations.graph_search import GraphSearch
 
 
 class GraphConnectivity:
@@ -105,3 +107,61 @@ class GraphStrongConnectivity:
             if not self.visited_vertices[vertex]:
                 self._dfs_with_component_marking(vertex)
                 self.component_count += 1
+
+
+if __name__ == '__main__':
+    """Connectivity of undirected graphs"""
+    G = Graph(10)
+    edges = [
+        (0, 9),
+        (0, 8),
+        (0, 7),
+        (1, 2),
+        (1, 1),
+        (2, 6),
+        (9, 2),
+        (3, 5),
+        (6, 9),
+    ]
+    for (v, w) in edges:
+        G.add_edge(v, w)
+
+    CC = GraphConnectivity(G)
+
+    assert CC.connected(0, 1) is True
+    assert CC.connected(0, 3) is False
+    assert CC.connected(3, 4) is False
+    assert CC.id(0) == 1
+    assert CC.id(1) == 1
+    assert CC.id(4) == 3
+    assert CC.count() == 3
+
+    """Strong connectivity of undirected graphs"""
+    DG = Digraph(10)
+    edges = [
+        (0, 9),
+        (0, 8),
+        (0, 7),
+        (1, 2),
+        (1, 1),
+        (2, 6),
+        (2, 9),
+        (9, 2),
+        (3, 5),
+        (6, 9),
+        (7, 8),
+        (8, 0),
+        (0, 8)
+    ]
+    for (v, w) in edges:
+        DG.add_edge(v, w)
+
+    SC = GraphStrongConnectivity(DG)
+    print(SC)
+
+    assert SC.strongly_connected(0, 7) is True
+    assert SC.strongly_connected(6, 2) is True
+    assert SC.strongly_connected(1, 1) is True
+    assert SC.strongly_connected(0, 9) is False
+    assert SC.strongly_connected(3, 5) is False
+    assert SC.count() == 6

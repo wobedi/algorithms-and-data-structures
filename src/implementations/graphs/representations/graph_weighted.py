@@ -1,7 +1,8 @@
 from functools import reduce
 
 from edges import DirectedEdge
-from src.graphs.operations.graph_shortest_path import GraphShortestPath
+from src.implementations.graphs.operations.graph_shortest_path \
+    import GraphShortestPath
 
 
 class DigraphWeighted:

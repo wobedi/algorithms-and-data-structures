@@ -2,9 +2,6 @@ from functools import reduce
 
 from pandas import DataFrame
 
-from src.graphs.operations.graph_connectivity import GraphConnectivity
-from src.graphs.operations.graph_search import GraphSearch
-
 
 class Graph:
     """Implement three graph representation variants for illustration.
@@ -83,13 +80,22 @@ class Graph:
 
     def _e_from_adj_matrix(self) -> int:
         """Return number of edges from adj matrix."""
-        # Divide by 2 because each edge is represented twice: [v][w] and [w][v]
-        return reduce(lambda a, b: a + b.count(1), self.adj_matrix, 0) // 2
+        deduplicated_adj_matrix = [
+            row[row_index:] for row_index, row in enumerate(self.adj_matrix)
+        ]  # using a 'diagonally-split' half of the adj matrix to deduplicate
+        return reduce(lambda a, b: a + b.count(1), deduplicated_adj_matrix, 0)
 
     def _e_from_adj_list(self) -> int:
         """Return number of edges from adj list."""
-        # Divide by 2 because each edge is represented twice: [v][w] and [w][v]
-        return sum([len(vertex_set) for vertex_set in self.adj_list]) // 2
+        number_of_self_loops = 0
+        for vertex, edges in enumerate(self.adj_list):
+            if vertex in edges:
+                number_of_self_loops += 1
+        number_of_non_self_loop_edges = sum([
+            len(vertex_set) for vertex_set in self.adj_list
+        ]) // 2
+
+        return number_of_self_loops + number_of_non_self_loop_edges
 
 
 if __name__ == '__main__':
@@ -98,109 +104,47 @@ if __name__ == '__main__':
     G.add_edge(0, 9)
     G.add_edge(0, 9)
     print(G)
-    G.add_edge(0, 8)
-    G.add_edge(0, 7)
-    G.add_edge(1, 2)
-    G.add_edge(1, 1)
-    G.add_edge(2, 6)
-    G.add_edge(2, 9)
-    G.add_edge(9, 2)
-    G.add_edge(3, 5)
-    G.add_edge(6, 9)
+
+    assert G.edge_between(0, 9) is True
+    assert G.edge_between(0, 8) is False
+
+    edges = [
+        (0, 8),
+        (0, 7),
+        (1, 2),
+        (1, 1),
+        (2, 6),
+        (2, 9),  # duplicate
+        (9, 2),  # duplicate
+        (3, 5),
+        (6, 9),
+    ]
+    for (v, w) in edges:
+        G.add_edge(v, w)
+
     print(f'Vertex count: {G.v()}')
-    print(f'Edge count: {G._e_from_edge_list()} / {G._e_from_adj_matrix()}'
+    print(f'Edge count: {G._e_from_edge_list()} / {G._e_from_adj_matrix()} '
           f'/ {G._e_from_adj_list()}')
     print(G)
-    print('Edges for vertex 0:')
-    print(G._adj_from_edge_list(0))
-    print(G._adj_from_adj_matrix(0))
-    print(G._adj_from_adj_list(0))
-    print('Edges for vertex 9:')
-    print(G._adj_from_edge_list(9))
-    print(G._adj_from_adj_matrix(9))
-    print(G._adj_from_adj_list(9))
-    print('Edges for vertex 5:')
-    print(G._adj_from_edge_list(5))
-    print(G._adj_from_adj_matrix(5))
-    print(G._adj_from_adj_list(5))
-    GS = GraphSearch(G, 0)
-    print(GS.source_has_path_to(6))
-    print('Path from source to 6:', GS.source_path_to(6))
-    print(GS.source_has_path_to(3))
-    print('Path from source to 3:', GS.source_path_to(3))
-    print('Arbitrary cycle (if any):', GS.cycle)
-    CC = GraphConnectivity(G)
-    print(CC)
-    assert CC.connected(0, 1) is True
-    assert CC.connected(0, 3) is False
-    assert CC.connected(3, 4) is False
-    assert CC.id(0) == 1
-    assert CC.id(1) == 1
-    assert CC.id(4) == 3
-    assert CC.count() == 3
+    print(f'Edges for vertex 0: {G._adj_from_edge_list(0)} / '
+          f'{G._adj_from_adj_matrix(0)} / {G._adj_from_adj_list(0)}')
+    print(f'Edges for vertex 9: {G._adj_from_edge_list(9)} / '
+          f'{G._adj_from_adj_matrix(9)} / {G._adj_from_adj_list(9)}')
+    print(f'Edges for vertex 5: {G._adj_from_edge_list(5)} / '
+          f'{G._adj_from_adj_matrix(5)} / {G._adj_from_adj_list(5)}')
 
-# Edge List: []
-# Adj Matrix:
-#        0    1    2    3    4    5    6    7    8    9
-# 0    0    0    0    0    0    0    0    0    0    0
-# 1    0    0    0    0    0    0    0    0    0    0
-# 2    0    0    0    0    0    0    0    0    0    0
-# 3    0    0    0    0    0    0    0    0    0    0
-# 4    0    0    0    0    0    0    0    0    0    0
-# 5    0    0    0    0    0    0    0    0    0    0
-# 6    0    0    0    0    0    0    0    0    0    0
-# 7    0    0    0    0    0    0    0    0    0    0
-# 8    0    0    0    0    0    0    0    0    0    0
-# 9    0    0    0    0    0    0    0    0    0    0
-# Adj List: [set(), set(), set(), set(), set(), set(), set(),set(),set(),set()]
-# **********************************************
-# Edge List: [(0, 9)]
-# Adj Matrix:
-#        0    1    2    3    4    5    6    7    8    9
-# 0    0    0    0    0    0    0    0    0    0    1
-# 1    0    0    0    0    0    0    0    0    0    0
-# 2    0    0    0    0    0    0    0    0    0    0
-# 3    0    0    0    0    0    0    0    0    0    0
-# 4    0    0    0    0    0    0    0    0    0    0
-# 5    0    0    0    0    0    0    0    0    0    0
-# 6    0    0    0    0    0    0    0    0    0    0
-# 7    0    0    0    0    0    0    0    0    0    0
-# 8    0    0    0    0    0    0    0    0    0    0
-# 9    1    0    0    0    0    0    0    0    0    0
-# Adj List: [{9}, set(), set(), set(), set(), set(), set(), set(), set(), {0}]
-# **********************************************
-# Vertex count: 10
-# Edge count: 8 / 8 / 8
-# Edge List: [(0, 9), (0, 8), (0, 7), (1, 2), (2, 6), (2, 9), (3, 5), (6, 9)]
-# Adj Matrix:
-#        0    1    2    3    4    5    6    7    8    9
-# 0    0    0    0    0    0    0    0    1    1    1
-# 1    0    0    1    0    0    0    0    0    0    0
-# 2    0    1    0    0    0    0    1    0    0    1
-# 3    0    0    0    0    0    1    0    0    0    0
-# 4    0    0    0    0    0    0    0    0    0    0
-# 5    0    0    0    1    0    0    0    0    0    0
-# 6    0    0    1    0    0    0    0    0    0    1
-# 7    1    0    0    0    0    0    0    0    0    0
-# 8    1    0    0    0    0    0    0    0    0    0
-# 9    1    0    1    0    0    0    1    0    0    0
-# Adj List: [{8, 9, 7}, {2}, {1, 6, 9}, {5},set(),{3},{9, 2},{0},{0},{0, 2, 6}]
-# **********************************************
-# Edges for vertex 0:
-# [9, 8, 7]
-# [7, 8, 9]
-# {8, 9, 7}
-# Edges for vertex 9:
-# [0, 2, 6]
-# [0, 2, 6]
-# {0, 2, 6}
-# Edges for vertex 5:
-# [3]
-# [3]
-# {3}
-# True
-# Path from source to 6: [0, 9, 2, 6]
-# False
-# Path from source to 3: []
-# Arbitrary cycle (if any): [0, 9, 6, 2, 9, 0]
-# <__main__.GraphConnectivity object at 0x7f87af109110>
+    assert G.v() == 10
+
+    assert G._e_from_edge_list() == 9
+    assert G._e_from_adj_matrix() == 9
+    assert G._e_from_adj_list() == 9
+
+    assert G._adj_from_edge_list(0) == [9, 8, 7]
+    assert G._adj_from_adj_matrix(0) == [7, 8, 9]
+    assert G._adj_from_adj_list(0) == {7, 8, 9}
+    assert G._adj_from_edge_list(9) == [0, 2, 6]
+    assert G._adj_from_adj_matrix(9) == [0, 2, 6]
+    assert G._adj_from_adj_list(9) == {0, 2, 6}
+    assert G._adj_from_edge_list(5) == [3]
+    assert G._adj_from_adj_matrix(5) == [3]
+    assert G._adj_from_adj_list(5) == {3}

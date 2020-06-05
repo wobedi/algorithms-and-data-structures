@@ -1,3 +1,7 @@
+from src.implementations.graphs.representations.graph_undirected import Graph
+from src.implementations.graphs.representations.graph_directed import Digraph
+
+
 class GraphSearch:
     """Preprocesses a graph to store shortest paths from a given source vertex
     to all other vertices that are connected to this source vertex.
@@ -12,8 +16,8 @@ class GraphSearch:
         self.cycle = []
         self._dfs(source_vertex)  # bfs would also work
 
-    def is_acyclic(self) -> bool:
-        """Returns True if graph is acyclic, else False"""
+    def is_cyclic(self) -> bool:
+        """Returns True if graph is cyclic, else False"""
         return bool(self.cycle)
 
     def source_has_path_to(self, v: int) -> bool:
@@ -90,3 +94,61 @@ class GraphSearch:
                     return True
                 visited[w] = True
         return False
+
+
+if __name__ == '__main__':
+    """Undirected graph search"""
+    G = Graph(10)
+    edges = [
+        (0, 9),
+        (0, 8),
+        (0, 7),
+        (1, 2),
+        (1, 1),
+        (2, 6),
+        (9, 2),
+        (3, 5),
+        (6, 9),
+    ]
+    for (v, w) in edges:
+        G.add_edge(v, w)
+
+    GS = GraphSearch(G, 0)
+
+    assert GS.source_has_path_to(6) is True
+    assert GS.source_path_to(6) == [0, 9, 2, 6]
+    assert GS.source_has_path_to(3) is False
+    assert GS.source_path_to(3) == []
+    assert GS.is_cyclic() is True
+    assert GS.cycle != []
+    print('Arbitrary cycle (undirected):', GS.cycle)
+
+    """Directed graph search"""
+    DG = Digraph(10)
+    edges = [
+        (0, 9),
+        (0, 8),
+        (0, 7),
+        (1, 2),
+        (1, 1),
+        (2, 6),
+        (2, 9),
+        (9, 2),
+        (3, 5),
+        (6, 9),
+        (7, 8),
+        (8, 0),
+        (0, 8)
+    ]
+    for (v, w) in edges:
+        DG.add_edge(v, w)
+
+    GSD = GraphSearch(DG, 0)
+
+    assert GSD.source_has_path_to(2) is True
+    assert GSD.source_path_to(2) == [0, 9, 2]
+    assert GSD.source_has_path_to(3) is False
+    assert GSD.source_path_to(3) == []
+    assert GSD.is_cyclic() is True
+    assert GSD.cycle != []
+    print('Arbitrary cycle (undirected):', GSD.cycle)
