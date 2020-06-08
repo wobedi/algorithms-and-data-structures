@@ -30,7 +30,7 @@ if __name__ == '__main__':
                 'mergesort (rec)', 'mergesort (itr)'],
         xlabel="Array of N integers in [0, N)",
         title='Sorting an array of integers',
-        n_range=[n for n in range(1, SAMPLE_SIZE)],
+        n_range=range(1, SAMPLE_SIZE),
         equality_check=None
     )
 

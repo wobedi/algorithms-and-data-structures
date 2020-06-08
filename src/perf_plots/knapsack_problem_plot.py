@@ -26,7 +26,7 @@ if __name__ == '__main__':
         labels=['recursive', 'bottom_up'],
         xlabel="N weights and values at N*3 capacity",
         title='Solving the 0-1 Knapsack problem',
-        n_range=[n for n in range(1, SAMPLE_SIZE)],
+        n_range=range(1, SAMPLE_SIZE),
         equality_check=None
     )
 

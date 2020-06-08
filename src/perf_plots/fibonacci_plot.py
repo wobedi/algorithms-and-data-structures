@@ -21,7 +21,7 @@ if __name__ == '__main__':
         labels=['recursive', 'memoized', 'bottom_up', 'bottom_up_minified'],
         xlabel="n'th Fibonacci number",
         title='Calculating the n\'th Fibonacci number',
-        n_range=[n for n in range(1, SAMPLE_SIZE)],
+        n_range=range(1, SAMPLE_SIZE),
         equality_check=None
     )
 
