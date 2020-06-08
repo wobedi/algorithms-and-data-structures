@@ -7,14 +7,20 @@ class GraphSearch:
     to all other vertices that are connected to this source vertex.
     This allows the lookup of paths in O(L) where L is the length of the path.
     """
-    def __init__(self, graph, source_vertex: int):
+    def __init__(self, graph, source_vertex: int, method='bfs'):
         self.graph = graph
         self.source = source_vertex
         self.count = graph.v()
         self.visited = [False for v in range(graph.v())]
         self.parent = [None for v in range(graph.v())]
         self.cycle = []
-        self._dfs(source_vertex)  # bfs would also work
+
+        if method == 'bfs':
+            self._bfs()
+        elif method == 'dfs_recursive':
+            self._dfs(source_vertex)
+        else:
+            self._dfs_iterative()
 
     def is_cyclic(self) -> bool:
         """Returns True if graph is cyclic, else False"""
@@ -41,12 +47,12 @@ class GraphSearch:
         # Breadth-first search, iteratively, starting at the source
         queue = [self.source]
         while queue:
-            v = queue.pop(0)
+            v = queue.pop()
             self.visited[v] = True
             for w in self.graph.adj(v):
-                if self.visited[w] is True and not w == self.parent[v]:
-                    self.cycle = (self.source_path_to(w)
-                                  + list(reversed(self.source_path_to(v))))
+                # if self.visited[w] is True and not w == self.parent[v]:
+                #     self.cycle = (self.source_path_to(w)
+                #                   + list(reversed(self.source_path_to(v))))
                 if self.visited[w] is False:
                     self.parent[w] = v
                     queue.append(w)
@@ -55,9 +61,9 @@ class GraphSearch:
         # Depth-first search, recursively
         self.visited[v] = True
         for w in self.graph.adj(v):
-            if self.visited[w] is True and not w == self.parent[v]:
-                self.cycle = (self.source_path_to(w)
-                              + list(reversed(self.source_path_to(v))))
+            # if self.visited[w] is True and not w == self.parent[v]:
+            #     self.cycle = (self.source_path_to(w)
+            #                   + list(reversed(self.source_path_to(v))))
             if self.visited[w] is False:
                 self.parent[w] = v
                 self._dfs(w)
@@ -67,9 +73,9 @@ class GraphSearch:
         stack = [(self.source, None)]
         while stack:
             (v, parent) = stack.pop()
-            if self.visited[v] is True and not v == self.parent[parent]:
-                self.cycle = (self.source_path_to(v) +
-                              list(reversed(self.source_path_to(parent))))
+            # if self.visited[v] is True and not v == self.parent[parent]:
+            #     self.cycle = (self.source_path_to(v) +
+            #                   list(reversed(self.source_path_to(parent))))
             if self.visited[v] is False:
                 self.visited[v] = True
                 self.parent[v] = parent
