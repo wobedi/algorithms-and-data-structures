@@ -136,7 +136,7 @@ if __name__ == '__main__':
     assert CC.id(4) == 3
     assert CC.count() == 3
 
-    """Strong connectivity of undirected graphs"""
+    """Strong connectivity of directed graphs"""
     DG = Digraph(10)
     edges = [
         (0, 9),

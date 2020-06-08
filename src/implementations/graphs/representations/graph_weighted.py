@@ -1,8 +1,6 @@
 from functools import reduce
 
-from edges import DirectedEdge
-from src.implementations.graphs.operations.graph_shortest_path \
-    import GraphShortestPath
+from src.implementations.graphs.representations.edges import DirectedEdge
 
 
 class DigraphWeighted:
@@ -25,12 +23,12 @@ class DigraphWeighted:
         self.adj_list[e.from_()].add(e)
 
     def adj(self, v: int) -> list:
-        """Returns edges from v"""
-        return [edge for edge in self.adj_list[v]]
+        """Returns vertices adjacent to v"""
+        return set([edge for edge in self.adj_list[v]])
 
     def edge_between(self, v: int, w: int) -> bool:
         """Returns True if there is an edge from v to w, else False"""
-        return reduce(lambda a, b: a | b.to() == w, self.adj_list[v], False)
+        return reduce(lambda a, b: b.to() == w, self.adj_list[v], False)
 
     def edges(self) -> list:
         """Returns iterable of edges"""
@@ -46,35 +44,33 @@ class DigraphWeighted:
 
 
 if __name__ == '__main__':
-    graph_size = 10
-    DGW = DigraphWeighted(graph_size)
-    for i, j in zip(range(15), range(0, 30, 2)):
-        DE = DirectedEdge(i % graph_size, i*(3*i+2)//3 % graph_size, j)
-        DGW.add_edge(DE)
-    MORE = [(4, 7, 31), (4, 2, 32), (2, 3, 33), (1, 0, 33)]
-    for i in MORE:
-        DGW.add_edge(DirectedEdge(i[0], i[1], i[2]))
+    DGW = DigraphWeighted(10)
     print(DGW)
-    SP = GraphShortestPath(DGW, 4)
-    print(f'4 to 5: {SP.source_distance_to(5)}'
-          f'via {SP.source_shortest_path_to(5)}')
-    print(f'4 to 3: {SP.source_distance_to(3)}'
-          f'via {SP.source_shortest_path_to(3)}')
-    print(f'4 to 6: {SP.source_distance_to(6)}'
-          f'via {SP.source_shortest_path_to(6)}')
-    print(f'4 to 7: {SP.source_distance_to(7)}'
-          f'via {SP.source_shortest_path_to(7)}')
-    print(f'4 to 4: {SP.source_distance_to(4)}'
-          f'via {SP.source_shortest_path_to(4)}')
+    DGW.add_edge(DirectedEdge(0, 9, 1))
+    print(DGW)
 
+    assert DGW.edge_between(0, 9) is True
+    assert DGW.edge_between(0, 8) is False
 
-# Adj List: ['0->0: 0', '0->6: 20', '1->8: 22', '1->1: 2', '1->0: 33',
-# '2->2: 24', '2->5: 4', '2->3: 33', '3->1: 6', '3->7: 26', '4->5: 28',
-# '4->7: 31', '4->8: 8', '4->2: 32', '5->8: 10', '6->0: 12', '7->3: 14',
-# '8->9: 16', '9->7: 18']
-# **********************************************
-# 4 to 5: 28 via [4, 5]
-# 4 to 3: 45 via [4, 7, 3]
-# 4 to 6: 104 via [4, 7, 3, 1, 0, 6]
-# 4 to 7: 31 via [4, 7]
-# 4 to 4: 0 via [4]
+    edges = [
+        DirectedEdge(0, 8, 1),
+        DirectedEdge(0, 7, 2),
+        DirectedEdge(1, 2, 3),
+        DirectedEdge(1, 1, 4),
+        DirectedEdge(2, 6, 5),
+        DirectedEdge(2, 9, 3),  # duplicate
+        DirectedEdge(9, 2, 3),  # duplicate
+        DirectedEdge(3, 5, 2),
+        DirectedEdge(6, 9, 1),
+        DirectedEdge(7, 8, 0),
+        DirectedEdge(8, 0, 1),
+    ]
+    for d in edges:
+        DGW.add_edge(d)
+
+    print(f'Vertex count: {DGW.v()}')
+    print(f'Edge count: {DGW.e()}')
+    print(DGW)
+
+    assert DGW.v() == 10
+    assert DGW.e() == 12
