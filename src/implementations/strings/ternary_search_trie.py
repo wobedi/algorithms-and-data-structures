@@ -15,7 +15,7 @@ class TernarySearchTrie:
         """Delete string s from trie"""
         self.root = self._delete(s, 0, self.root)
 
-    def _get(self, s: str, i: int, node: _TernarySearchTrieNode):
+    def _get(self, s: str, i: int, node):
         """Recursively traverse trie to find string s"""
         c = s[i]
         if node is None:
@@ -35,7 +35,7 @@ class TernarySearchTrie:
             print(f'String {s} is not in trie')
             return False
 
-    def _put(self, s: str, i: int, label, node: _TernarySearchTrieNode):
+    def _put(self, s: str, i: int, label, node):
         """Recursively upsert string s with label into trie"""
         c = s[i]
         if node is None:
@@ -52,7 +52,7 @@ class TernarySearchTrie:
 
         return node
 
-    def _delete(self, s: str, i: int, node: _TernarySearchTrieNode):
+    def _delete(self, s: str, i: int, node):
         """Recursively delete string s from trie, including cleaning up trie"""
         c = s[i]
         if node is None:
@@ -84,41 +84,17 @@ class _TernarySearchTrieNode:
 if __name__ == '__main__':
     T = TernarySearchTrie()
     print(T)
-    assert T.get('a') is False
     TEST_STRINGS = ['appleE', "donkey'][]", 'donner',
                     'garfield123', 'garfunkel']
+
     for i, s in enumerate(TEST_STRINGS):
         T.put(s, i + 1)
-    assert T.get('a') is False
+
     for s in TEST_STRINGS:
         assert T.get(s) is True
+
     T.delete('garfield123')
     assert T.get('garfield123') is False
     assert T.get('garfunkel') is True
     assert T.get('a') is False
     print(T)
-
-# <__main__.TernarySearchTrie object at 0x7fcbdd062b10>
-# String a is not in Trie
-# String a is not in Trie
-# String appleE is in Trie with label 1
-# String donkey'][] is in Trie with label 2
-# <__main__.TernarySearchTrie object at 0x7fcbdd062b10>
-# String a is not in Trie
-# String a is not in Trie
-# String appleE is in Trie with label 1
-# String donkey'][] is in Trie with label 2
-# String donner is in Trie with label 3
-# String garfield123 is in Trie with label 4
-# String garfunkel is in Trie with label 5
-# String garfield123 is not in Trie
-# String garfunkel is in Trie with label 5
-# String a is not in Trie
-# <__main__.TernarySearchTrie object at 0x7fcbdd062b10>
-# String donner is in Trie with label 3
-# String garfield123 is in Trie with label 4
-# String garfunkel is in Trie with label 5
-# String garfield123 is not in Trie
-# String garfunkel is in Trie with label 5
-# String a is not in Trie
-# <__main__.TernarySearchTrie object at 0x7fcbdd062b10>

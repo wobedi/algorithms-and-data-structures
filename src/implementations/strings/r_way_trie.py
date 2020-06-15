@@ -70,7 +70,7 @@ class RWayTrie:
             node = node.next[code]
         return [p + s for s in self.keys(node)]
 
-    def _delete(self, string: str, index: int, node: _RWayTriNode):
+    def _delete(self, string: str, index: int, node):
         # Base condition I: reached end of string and am still in trie
         if index == len(string):
             node.value = None
@@ -85,14 +85,14 @@ class RWayTrie:
         node.next[next_index] = self._delete(string, index + 1, next_node)
         return self._none_if_node_is_null_else_node(node)
 
-    def _none_if_node_is_null_else_node(self, node: _RWayTriNode):
+    def _none_if_node_is_null_else_node(self, node):
         # Returns None if node is null, else returns node
         node_has_children = reduce(lambda a, b: b is not None, node.next, None)
         if not node_has_children and not node.value:
             return None
         return node
 
-    def _keys(self, node: _RWayTriNode, prefix: str, result: []):
+    def _keys(self, node, prefix: str, result: []):
         # Stores all keys that are children of node in result
         if node is None:
             return
@@ -124,18 +124,20 @@ if __name__ == '__main__':
     T = RWayTrie()
     TEST_STRINGS = ['appleE', 'donkey[]', 'garfield123', 'garfunkel']
     print(T)
-    T.get('a')
+
     for s in TEST_STRINGS:
         T.put(s, s)
+
     for s in TEST_STRINGS:
         assert T.get(s) == s
     assert set(T.keys()) == {'appleE', 'donkey[]', 'garfield123', 'garfunkel'}
     assert T.longest_prefix_of('donkendonuTs') == 'donke'
     assert set(T.keys_with_prefix('garf')) == {'garfield123', 'garfunkel'}
+
     T.delete('appleE')
     assert T.get('appleE') is False
+
     assert set(T.keys()) == {'donkey[]', 'garfield123', 'garfunkel'}
     assert T.get('a') is False
     assert T.get('a') is False
     assert T.get('a') is False
-    print(T)

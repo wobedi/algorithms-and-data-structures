@@ -1,3 +1,15 @@
+def _input_validation(func):
+    """Wrapper that ensures that terminal char is not in pattern.
+    Only works for unary functions whose single argument is pattern.
+    """
+    def wrapped_input_validation(self, pattern: str):
+        if self.terminal_char in pattern:
+            raise Exception(f'Terminal_char {self.terminal_char}'
+                            f'must not be in input pattern')
+        return func(self, pattern)
+    return wrapped_input_validation
+
+
 class SuffixTrie:
     """Implements a suffix trie that enables O(L) substring search
     where L is the length of the substring.
@@ -75,26 +87,13 @@ class SuffixTrie:
         return node
 
 
-def _input_validation(func):
-    """Wrapper that ensures that terminal char is not in pattern.
-    Only works for unary functions whose single argument is pattern.
-    """
-    def wrapped_input_validation(self, pattern: str):
-        if self.terminal_char in pattern:
-            raise (f'Terminal_char {self.terminal_char}'
-                   f'must not be in input pattern')
-        return func(self, pattern)
-    return wrapped_input_validation
-
-
 if __name__ == '__main__':
     STrie = SuffixTrie('abcdefghijklmnopqrstuvwxyznopqn'
                        'opqfghijklmnobcdefepoqijrmnopqrsoiweroiwn')
     print(STrie)
     pattern_list = ['opq', 'abc', 'oiwn', 'mnopqrsoiweroiwn', 'fg']
+
     for pattern in pattern_list:
         print(f'Pattern {pattern} appears {STrie.count(pattern)} times in T')
         print(f'Pattern {pattern} is a suffix of T:'
               f'{STrie.is_suffix_of_T(pattern)}')
-    STrie.count('werewrew!$er')
-    STrie = SuffixTrie('werewrew!$er')
