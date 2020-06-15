@@ -21,5 +21,8 @@ def heapsort(arr: list) -> list:
 if __name__ == '__main__':
     keys = [1, 2, 3, 10, 34, 22, 14, 21, 0]
     keys_sorted = sorted(keys)
-    print(heapsort(keys))
-    assert(heapsort(keys)) == keys_sorted
+
+    heap_sorted = heapsort(keys)
+
+    print(f'Heapsort output: {heap_sorted}')
+    assert heap_sorted == keys_sorted

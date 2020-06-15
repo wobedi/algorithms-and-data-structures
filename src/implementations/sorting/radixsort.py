@@ -37,5 +37,7 @@ if __name__ == '__main__':
         'cello',
         'oteee'
     ]
-    print(radixsort_LSD(string_list, 5))
-    # ['Bestr', 'Testr', 'bello', 'brotr', 'cello', 'hello', 'oteee', 'sistr']
+    string_list_sorted = radixsort_LSD(string_list, 5)
+    print(string_list_sorted)
+    assert string_list_sorted == ['Bestr', 'Testr', 'bello', 'brotr', 'cello',
+                                  'hello', 'oteee', 'sistr']

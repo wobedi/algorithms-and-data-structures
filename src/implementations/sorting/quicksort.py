@@ -8,7 +8,7 @@ def quicksort(arr: list) -> list:
     """Sorts arr in-place
     by implementing https://en.wikipedia.org/wiki/Quicksort
     """
-    shuffle(arr)
+    shuffle(arr)  # shuffling in O(N) to avoid O(N2) edge case
     return _quicksort(arr, lower=0, upper=len(arr)-1)
 
 
@@ -24,3 +24,13 @@ def _quicksort(arr: list, lower: int, upper: int) -> list:
         _quicksort(arr, lower, lt-1)
         _quicksort(arr, gt+1, upper)
     return arr
+
+
+if __name__ == '__main__':
+    keys = [1, 2, 3, 10, 34, 22, 14, 21, 0]
+    keys_sorted = sorted(keys)
+
+    quick_sorted = quicksort(keys)
+
+    print(f'Quicksort output: {quick_sorted}')
+    assert quick_sorted == keys_sorted

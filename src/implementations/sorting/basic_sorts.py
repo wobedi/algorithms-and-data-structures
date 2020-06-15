@@ -1,5 +1,6 @@
 from typing import Generator
 
+
 def selection_sort(arr: list) -> list:
     """Sorts arr in-place by implementing
     https://en.wikipedia.org/wiki/Selection_sort
@@ -44,3 +45,19 @@ def knuth_sequence(arr_len: int) -> Generator[int, None, None]:
     while(x < arr_len):
         yield x
         x = 3*x + 1
+
+
+if __name__ == '__main__':
+    keys = [1, 2, 3, 10, 34, 22, 14, 21, 0]
+    keys_sorted = sorted(keys)
+
+    selection_sorted = selection_sort(keys)
+    insertion_sorted = insertion_sort(keys)
+    shell_sorted = shell_sort(keys)
+
+    print(f'Selection sort output: {selection_sorted})')
+    assert selection_sorted == keys_sorted
+    print(f'Insertion sort output: {insertion_sorted})')
+    assert insertion_sorted == keys_sorted
+    print(f'Shell sort output: {shell_sorted})')
+    assert shell_sorted == keys_sorted
