@@ -7,7 +7,6 @@ from src.implementations.sorting.basic_sorts import \
 from src.implementations.sorting.heapsort import heapsort
 from src.implementations.sorting.mergesort import \
     mergesort_iterative, mergesort_recursive
-from src.implementations.sorting.quicksort import quicksort
 from src.implementations.sorting.radixsort import radixsort_LSD
 from src.perf_plots.config import SAMPLE_SIZES
 
@@ -24,9 +23,8 @@ if __name__ == '__main__':
             lambda a: heapsort(a),
             lambda a: mergesort_recursive(a),
             lambda a: mergesort_iterative(a),
-            # lambda a: quicksort(a),
         ],
-        labels=['selection sort', 'insertion sort', 'shell sort', 'heapsort', 
+        labels=['selection sort', 'insertion sort', 'shell sort', 'heapsort',
                 'mergesort (rec)', 'mergesort (itr)'],
         xlabel="Array of N integers in [0, N)",
         title='Sorting an array of integers',
