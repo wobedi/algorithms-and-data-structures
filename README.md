@@ -25,7 +25,7 @@ This repo is the result.
 
 ### Arrays
 
-- Dequeue via a dynamically-sized array with ring buffer
+- Deque via a dynamically-sized array with ring buffer
 - Binary search
 - Quickselect
 
