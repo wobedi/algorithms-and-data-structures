@@ -1,3 +1,12 @@
+class BinaryNode:
+    """Implements a binary tree node"""
+    def __init__(self, key, value,
+                 left=None,
+                 right=None):
+        self.key, self.value = key, value
+        self.left, self.right = left, right
+
+
 class BinarySearchTree:
     """Implements https://en.wikipedia.org/wiki/Binary_search_tree"""
     def __init__(self):
@@ -10,14 +19,14 @@ class BinarySearchTree:
     def get(self, key):
         """Returns value of key if key is in tree, else None"""
         node = self._get(key)
-        return node.value if node else False
+        return node.value if node else None
 
-    def put(self, key, value) -> _BinaryNode:
+    def put(self, key, value) -> BinaryNode:
         """Inserts key:value into tree, returns pointer to upserted node"""
         self.root = self._put(self.root, key, value)
         return self.upserted_node
 
-    def delete(self, key) -> None | False:
+    def delete(self, key) -> None or False:
         """Deletes key from tree. Returns None if successful, False if not."""
         if self.root is None:
             return False
@@ -29,7 +38,7 @@ class BinarySearchTree:
             return False
         self.root = self._del_min(self.root)
 
-    def min(self, node=None) -> _BinaryNode | None:
+    def min(self, node=None) -> BinaryNode or None:
         """Return node with smallest key, leveraging symmetric order of tree"""
         node = node or self.root
         while True:
@@ -38,7 +47,7 @@ class BinarySearchTree:
             else:
                 node = node.left
 
-    def max(self, node=None) -> _BinaryNode | None:
+    def max(self, node=None) -> BinaryNode or None:
         """Returns node with largest key, leveraging symmetric order of tree"""
         node = node or self.root
         while True:
@@ -47,7 +56,7 @@ class BinarySearchTree:
             else:
                 node = node.right
 
-    def is_empty(self, key) -> bool:
+    def is_empty(self) -> bool:
         """Returns True if tree is empty, else False"""
         return self.root is not None
 
@@ -57,7 +66,7 @@ class BinarySearchTree:
         self.traverse(self.root, q, 'inorder')
         return q
 
-    def traverse(self, node: _BinaryNode, queue: [], order: str):
+    def traverse(self, node: BinaryNode, queue: [], order: str):
         """Traverses the tree in pre-, in-, or postorder
         and stores value in queue
         """
@@ -70,7 +79,7 @@ class BinarySearchTree:
         self.traverse(node.right, queue, order)
         queue.append(node.key) if order == 'postorder' else None
 
-    def _get(self, key) -> _BinaryNode | False:
+    def _get(self, key) -> BinaryNode or False:
         # Iteratively search for key in tree
         node = self.root
         while node is not None:
@@ -82,10 +91,10 @@ class BinarySearchTree:
                 node = node.left
         return False
 
-    def _put(self, node: _BinaryNode, key, value) -> _BinaryNode:
+    def _put(self, node: BinaryNode, key, value) -> BinaryNode:
         # Recursively put key:value pair into tree
         if node is None:
-            self.upserted_node = self._Node(key, value)
+            self.upserted_node = BinaryNode(key, value)
             return self.upserted_node
         if key > node.key:
             node.right = self._put(node.right, key, value)
@@ -96,7 +105,7 @@ class BinarySearchTree:
             self.upserted_node = node
         return node
 
-    def _delete(self, node: _BinaryNode, key) -> _BinaryNode | None:
+    def _delete(self, node: BinaryNode, key) -> BinaryNode or None:
         """Implements
         https://en.wikipedia.org/wiki/Binary_search_tree#Deletion
         """
@@ -120,7 +129,7 @@ class BinarySearchTree:
             node.left = self._delete(node.left, key)
         return node
 
-    def _del_min(self, node: _BinaryNode) -> _BinaryNode:
+    def _del_min(self, node: BinaryNode) -> BinaryNode:
         # Traverses tree to the left until leaf node is reached
         if node.left is None:
             return node.right
@@ -128,22 +137,57 @@ class BinarySearchTree:
         return node
 
 
-class _BinaryNode:
-    """Implements a binary tree node"""
-    def __init__(self, key, value,
-                 left: _BinaryNode = None,
-                 right: _BinaryNode = None):
-        self.key, self.value = key, value
-        self.left, self.right = left, right
-
-
 if __name__ == '__main__':
     BST = BinarySearchTree()
-    BST.put(7, 7)
-    BST.put(4, 4)
-    BST.put(3, 3)
-    BST.put(5, 5)
-    BST.put(10, 10)
-    BST.put(8, 8)
-    BST.put(12, 12)
-    print(BST)
+    test_items = [
+        [1, 1],
+        [2, 2],
+        [3, 3],
+        [4, 4],
+        [5, 5],
+        [10, 10]
+    ]
+
+    # .get() should work if BST is empty
+    for key, value in test_items:
+        assert BST.get(key) is None
+
+    # .put() and .is_empty() should work, .get() should work if tree has items
+    assert BST.is_empty() is False
+    for key, value in test_items:
+        BST.put(key, value)
+        assert BST.get(key) == value
+    assert BST.is_empty() is True
+
+    # delete() should work, .get() should work after nodes have been deleted
+    for key, value in test_items:
+        BST.delete(key)
+        assert BST.get(key) is None
+
+    # subsequent puts should override previous puts
+    BST.put(1, 1)
+    BST.put(1, 2)
+    assert BST.get(1) == 2
+
+    # .min() and .max() should work
+    for key, value in test_items:
+        BST.put(key, value)
+    test_key_sorted = sorted([key for key, value in test_items])
+    assert BST.max().key == test_key_sorted[-1]
+    assert BST.min().key == test_key_sorted[0]
+    for key, value in test_items:
+        BST.delete(key)
+
+    # .del_min() should work
+    for key, value in test_items:
+        BST.put(key, value)
+    BST.del_min()
+    assert BST.min().key == test_key_sorted[1]
+    assert BST.get(test_key_sorted[0]) is None
+    for key, value in test_items:
+        BST.delete(key)
+
+    # .keys() should work
+    for key, value in test_items:
+        BST.put(key, value)
+    assert BST.keys() == test_key_sorted
