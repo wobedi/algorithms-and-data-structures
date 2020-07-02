@@ -80,7 +80,6 @@ class HashMap:
         return
 
 
-# Turn this into a unit test
 if __name__ == '__main__':
     initial_size = 5
     HM = HashMap(initial_size)
