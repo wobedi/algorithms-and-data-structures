@@ -100,7 +100,7 @@ if __name__ == '__main__':
     for key in test_items:
         assert HS.contains(key) is False
 
-    # .put() and, .contains() should work if HS has items
+    # .put() should work, .contains() should work if HS has items
     for key in test_items:
         assert HS.contains(key) is False
         HS.put(key)

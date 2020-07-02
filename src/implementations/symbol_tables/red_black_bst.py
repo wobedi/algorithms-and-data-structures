@@ -1,3 +1,11 @@
+class _RBNode:
+    """Implements a Binary Node with additional color bit"""
+    def __init__(self, key, value, isRed, left=None, right=None):
+        self.key, self.value = key, value
+        self.left, self.right = left, right
+        self.isRed = isRed
+
+
 class RedBlackTree:
     """Implements https://en.wikipedia.org/wiki/Red%E2%80%93black_tree"""
     def __init__(self):
@@ -6,7 +14,7 @@ class RedBlackTree:
     def get(self, key):
         """Returns value of key if key in tree, else False"""
         node = self._get(self.root, key)
-        return (node.value if node else False)
+        return (node.value if node else None)
 
     def put(self, key, value):
         """Upserts key:value into tree"""
@@ -17,7 +25,7 @@ class RedBlackTree:
         """Currently not implemented"""
         pass
 
-    def _get(self, node: _RBNode, key) -> _RBNode | False:
+    def _get(self, node: _RBNode, key) -> _RBNode or None:
         # Iteratively traverse tree in search of key
         while node is not None:
             if key == node.key:
@@ -26,11 +34,11 @@ class RedBlackTree:
                 node = node.left
             elif key > node.key:
                 node = node.right
-        return False
+        return None
 
     def _put(self, node: _RBNode, key, value) -> _RBNode:
         """Recursively upsert key:value
-        while maintaining Red-black BST invariants.
+        while maintaining Red-black RBT invariants.
         """
         if node is None:
             return _RBNode(key, value, isRed=True)
@@ -88,9 +96,28 @@ class RedBlackTree:
         return
 
 
-class _RBNode:
-    """Implements a Binary Node with additional color bit"""
-    def __init__(self, key, value, isRed, left=None, right=None):
-        self.key, self.value = key, value
-        self.left, self.right = left, right
-        self.isRed = isRed
+if __name__ == '__main__':
+    RBT = RedBlackTree()
+    test_items = [
+        [1, 1],
+        [2, 2],
+        [3, 3],
+        [4, 4],
+        [5, 5],
+        [12, 12]
+    ]
+
+    # .get() should work if RBT is empty
+    for key, _ in test_items:
+        assert RBT.get(key) is None
+
+    # .put() should work, .get() should work if RBT has items
+    for key, value in test_items:
+        assert RBT.get(key) is None
+        RBT.put(key, value)
+        assert RBT.get(key) == value
+
+    # subsequent puts should override previous puts
+    RBT.put(1, 1)
+    RBT.put(1, 2)
+    assert RBT.get(1) == 2
