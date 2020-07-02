@@ -1,4 +1,4 @@
-from src.symbol_tables import config
+from src.implementations.symbol_tables import config
 
 
 class HashSet:
@@ -28,24 +28,25 @@ class HashSet:
 
     def delete(self, key):
         """Deletes key from hash set"""
-        key_in_set, index = self._linear_probing(key)
+        key_in_set, i = self._linear_probing(key)
         if not key_in_set:
             return f'Deletion error: Key {key} is NOT part of this hash set'
-        self.set[index] = None
+        self.set[i] = None
         self.load -= 1
 
         # Moving subsequent items backwards to not break linear probing
-        next = index + 1
-        while self.set[next % self.size] is not None:  # Wrap around via modulo
-            self.set[index], self.set[next] = self.set[next], self.set[index]
-            index += 1
-            next += 1
+        if not self.set[(i + len(self.set) - 1) % len(self.set)] is None:
+            next = i + 1
+            while self.set[next % self.size] is not None:  # Wrap around
+                self.set[i], self.set[next] = self.set[next], self.set[i]
+                i += 1
+                next += 1
 
         if self.load / self.size < config.probing['LOAD_FACTOR_MIN']:
             self._downsize()
         return
 
-    def _linear_probing(self, key, set_=None) -> bool, int:
+    def _linear_probing(self, key, set_=None) -> bool or int:
         """Linear probing for key through hash set.
         Returns tuple:
         (True, index) for search hits at index,
@@ -53,11 +54,10 @@ class HashSet:
         where index is the final index checked/first index with key==None
         """
         set_ = set_ or self.set
-        index = self._modular_hash(key)    # Entry point for linear probing
+        index = self._modular_hash(key)  # Entry point for linear probing
         while set_[index] is not None:
-            if index >= self.size:    # Wrap around
+            if index >= self.size:  # Wrap around
                 index = 0
-                continue
             if set_[index] == key:
                 return (True, index)
             index += 1
@@ -92,42 +92,55 @@ class HashSet:
 
 # Turn this into a unit test
 if __name__ == '__main__':
-    HT = HashSet(5)
-    print(HT.set)
-    print(HT.contains("hello"))
-    print(HT.set)
-    HT.put("hello")
-    print(HT.set)
-    print(HT.contains("hello"))
-    print(HT.set)
-    HT.put(1)
-    print(HT.set)
-    HT.put(2)
-    print(HT.set)
-    HT.put(3)
-    print(HT.set)
-    HT.put(4)
-    # _linear_probing
-    print(HT.set)
-    HT.put(5)
-    print(HT.set)
-    HT.put(6)
-    print(HT.set)
-    HT.put(7)
-    print(HT.set)
-    HT.delete(7)
-    print(HT.set)
-    HT.delete(7)
-    print(HT.set)
-    HT.delete(5)
-    print(HT.set)
-    HT.delete(3)
-    print(HT.set)
-    HT.delete(2)
-    print(HT.set)
-    HT.delete(4)
-    print(HT.set)
-    HT.delete("hello")
-    print(HT.set)
-    HT.delete(1)
-    print(HT.set)
+    initial_size = 5
+    HS = HashSet(initial_size)
+    test_items = [1, 2, 3, 4, 5, 12]
+
+    # .contains() should work if HS is empty
+    for key in test_items:
+        assert HS.contains(key) is False
+
+    # .put() and, .contains() should work if HS has items
+    for key in test_items:
+        assert HS.contains(key) is False
+        HS.put(key)
+        assert HS.contains(key) is True
+
+    # delete() should work, .contains() should work after items deletion
+    for key in test_items:
+        assert HS.contains(key) is True
+        HS.delete(key)
+        assert HS.contains(key) is False
+
+    # puts should be idempotent
+    HS.put(1)
+    HS.put(1)
+    assert HS.contains(1) is True
+
+    # upsize should work
+    HS2 = HashSet(initial_size)
+    assert len(test_items) > initial_size
+    assert len(test_items) < initial_size * config.probing['UPSIZE_FACTOR']
+
+    added_items_counter = 0
+    while HS2.load / initial_size < config.probing['LOAD_FACTOR_MAX']:
+        key = test_items[added_items_counter]
+        HS2.put(key)
+        added_items_counter += 1
+
+    assert HS2.load == added_items_counter
+    assert HS2.size == len(HS2.set)
+    assert HS2.size == initial_size * config.probing['UPSIZE_FACTOR']
+
+    # downsize should work
+    old_size = HS2.size
+    old_load = HS2.load
+    deleted_items_counter = 0
+    while HS2.load / old_size > config.probing['LOAD_FACTOR_MIN']:
+        key = test_items[deleted_items_counter]
+        HS2.delete(key)
+        deleted_items_counter += 1
+
+    assert HS2.load == old_load - deleted_items_counter
+    assert HS2.size == len(HS2.set)
+    assert HS2.size == old_size * config.probing['DOWNSIZE_FACTOR']
