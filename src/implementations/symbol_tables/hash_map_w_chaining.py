@@ -1,6 +1,6 @@
 from pandas import DataFrame
 
-from src.symbol_tables import config
+from src.implementations.symbol_tables import config
 
 
 class HashMap:
@@ -19,14 +19,14 @@ class HashMap:
         return f'{self.table} | size: {self.size} | load: {self.load}'
 
     def get(self, key):
-        """Returns value of key in hash map if key in hash map, else False"""
+        """Returns value of key in hash map if key in hash map, else None"""
         row = self.table[self._modular_hash(key)]
         if len(row) < 0:
             print(f'\nKey {key} not in table')
-            return False
+            return None
         for tup in row:
             if tup[0] == key:
-                print(tup[1])
+                print(f'Value for key {key}: {tup[1]}')
                 return tup[1]
 
     def put(self, key, value):
@@ -36,7 +36,7 @@ class HashMap:
             if tup[0] == key:
                 tup[1] = value
                 return
-        row.append((key, value))
+        row.append([key, value])
         self.load += 1
         if self.load / self.size >= config.chaining['LOAD_FACTOR_MAX']:
             self._upsize()
@@ -75,48 +75,75 @@ class HashMap:
         aux_table = [[] for i in range(self.size)]
         for row in self.table:
             for k, v in row:
-                aux_table[self._modular_hash(k)].append((k, v))
+                aux_table[self._modular_hash(k)].append([k, v])
         self.table = aux_table
         return
 
 
 # Turn this into a unit test
 if __name__ == '__main__':
-    HT = HashMap(5)
-    print(DataFrame(HT.table))
-    HT.get("hello")
-    print(DataFrame(HT.table))
-    HT.put("hello", "hellov")
-    print(DataFrame(HT.table))
-    HT.get("hello")
-    print(DataFrame(HT.table))
-    HT.put(1, "1v")
-    print(DataFrame(HT.table))
-    HT.put(2, "2v")
-    print(DataFrame(HT.table))
-    HT.put(3, "3v")
-    print(DataFrame(HT.table))
-    HT.put(4, "4v")
-    print(DataFrame(HT.table))
-    HT.put(5, "5v")
-    print(DataFrame(HT.table))
-    HT.put(6, "6v")
-    print(DataFrame(HT.table))
-    HT.put(7, "7v")
-    print(DataFrame(HT.table))
-    HT.delete(7)
-    print(DataFrame(HT.table))
-    HT.delete(7)
-    print(DataFrame(HT.table))
-    HT.delete(5)
-    print(DataFrame(HT.table))
-    HT.delete(3)
-    print(DataFrame(HT.table))
-    HT.delete(2)
-    print(DataFrame(HT.table))
-    HT.delete(4)
-    print(DataFrame(HT.table))
-    HT.delete("hello")
-    print(DataFrame(HT.table))
-    HT.delete(1)
-    print(DataFrame(HT.table))
+    initial_size = 5
+    HM = HashMap(initial_size)
+    test_items = [
+        [1, 1],
+        [2, 2],
+        [3, 3],
+        [4, 4],
+        [5, 5],
+        [12, 12]
+    ]
+    print(f'INITIAL EMPTY HM:\n{DataFrame(HM.table)}\n*********************')
+
+    # .get() should work if HM is empty
+    for key, _ in test_items:
+        assert HM.get(key) is None
+
+    # .put() and, .get() should work if HM has items
+    for key, value in test_items:
+        assert HM.get(key) is None
+        HM.put(key, value)
+        assert HM.get(key) == value
+    print(f'HM AFTER PUTS:\n{DataFrame(HM.table)}\n*********************')
+
+    # delete() should work, .get() should work after items have been deleted
+    for key, value in test_items:
+        assert HM.get(key) == value
+        HM.delete(key)
+        assert HM.get(key) is None
+    print(f'HM AFTER DELETES:\n{DataFrame(HM.table)}\n*********************')
+
+    # subsequent puts should override previous puts
+    HM.put(1, 1)
+    HM.put(1, 2)
+    assert HM.get(1) == 2
+
+    # upsize should work
+    HM2 = HashMap(initial_size)
+    assert len(test_items) > initial_size
+    assert len(test_items) < initial_size * config.chaining['UPSIZE_FACTOR']
+
+    added_items_counter = 0
+    while HM2.load / initial_size < config.chaining['LOAD_FACTOR_MAX']:
+        key = test_items[added_items_counter][0]
+        value = test_items[added_items_counter][1]
+        HM2.put(key, value)
+        added_items_counter += 1
+
+    print(f'HM2 AFTER UPSIZING:\n{DataFrame(HM2.table)}\n********************')
+    assert HM2.load == added_items_counter
+    assert HM2.size == len(HM2.table)
+    assert HM2.size == initial_size * config.chaining['UPSIZE_FACTOR']
+
+    # downsize should work
+    old_size = HM2.size
+    old_load = HM2.load
+    deleted_items_counter = 0
+    while HM2.load / old_size > config.chaining['LOAD_FACTOR_MIN']:
+        key = test_items[deleted_items_counter][0]
+        HM2.delete(key)
+        deleted_items_counter += 1
+
+    print(f'HM2 AFTER DOWNSIZING:\n{DataFrame(HM2.table)}\n******************')
+    assert HM2.load == old_load - deleted_items_counter
+    assert HM2.size == len(HM2.table)
+    assert HM2.size == old_size * config.chaining['DOWNSIZE_FACTOR']
