@@ -80,7 +80,7 @@ Each implementation includes a unit test in its `if __name__ == '__main__':`
 
 ## Performance plots
 
-![fibonacci-plot_size-11](https://user-images.githubusercontent.com/31690419/83267964-3d761700-a1c5-11ea-961f-a7aaf0d6d559.png)
+![searching-integers_sample-size-500](https://user-images.githubusercontent.com/31690419/86478766-20e07800-bd4b-11ea-9868-2125ed8162b5.png)
 
 **In addition, this repo also includes performance plots for the following scenarios:**
 
@@ -89,6 +89,7 @@ Each implementation includes a unit test in its `if __name__ == '__main__':`
 - Solving the 0-1 knapsack problem (recursively vs. memoized)
 - Inserting items into a priority queue
 - Sorting integers (with various algorithms)
+- Searching integers (within various data structures)
 
 An interesting observation about these performance plots is that they do not always illustrate the big O time complexity of the underlying algorithms the way you would expect. Often times the sample size is too small for big O to really kick in; at small sample sizes the platform, coefficients and overhead can make up the bulk of the running time.
 

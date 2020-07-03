@@ -55,9 +55,11 @@ class HashSet:
         """
         set_ = set_ or self.set
         index = self._modular_hash(key)  # Entry point for linear probing
-        while set_[index] is not None:
+        while True:
             if index >= self.size:  # Wrap around
                 index = 0
+            if set_[index] is None:
+                break
             if set_[index] == key:
                 return (True, index)
             index += 1
