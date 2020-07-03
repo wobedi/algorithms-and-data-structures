@@ -30,6 +30,6 @@ if __name__ == '__main__':
         equality_check=None
     )
 
-    output.save(f'output/knapsack-plot_sample-size-{SAMPLE_SIZE}.png',
+    output.save(f'output/knapsack_sample-size-{SAMPLE_SIZE}.png',
                 transparent=False,
                 bbox_inches="tight")

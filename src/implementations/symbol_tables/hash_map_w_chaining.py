@@ -26,7 +26,6 @@ class HashMap:
             return None
         for tup in row:
             if tup[0] == key:
-                print(f'Value for key {key}: {tup[1]}')
                 return tup[1]
 
     def put(self, key, value):

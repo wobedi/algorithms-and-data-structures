@@ -25,6 +25,6 @@ if __name__ == '__main__':
         equality_check=None
     )
 
-    output.save(f'output/fibonacci-plot_sample-size-{SAMPLE_SIZE}.png',
+    output.save(f'output/fibonacci_sample-size-{SAMPLE_SIZE}.png',
                 transparent=False,
                 bbox_inches="tight")

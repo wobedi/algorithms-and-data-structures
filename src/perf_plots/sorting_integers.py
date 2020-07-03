@@ -32,6 +32,6 @@ if __name__ == '__main__':
         equality_check=None
     )
 
-    output.save(f'output/sorting-integers-plot_sample-size-{SAMPLE_SIZE}.png',
+    output.save(f'output/sorting-integers_sample-size-{SAMPLE_SIZE}.png',
                 transparent=False,
                 bbox_inches="tight")
