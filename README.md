@@ -68,13 +68,15 @@ This repo is the result.
 - R-way trie
 - Suffix trie
 - Ternary search trie
-- Symbol Tables
-  - Binary search tree
-  - Hash map with separate chaining
-  - Hash map with linear probing
-  - Read black binary search tree (proud of this one)
 
-Each implementation includes a unit test in its `if __name__ == '__main__'`
+### Symbol Tables
+
+- Binary search tree
+- Hash map with separate chaining
+- Hash map with linear probing
+- Read black binary search tree (proud of this one)
+
+Each implementation includes a unit test in its `if __name__ == '__main__':`
 
 ## Performance plots
 
@@ -83,10 +85,14 @@ Each implementation includes a unit test in its `if __name__ == '__main__'`
 **In addition, this repo also includes performance plots for the following scenarios:**
 
 - Calculating the n-th fiboncacci number (recursively vs. memoized)
+- Searching a graph depth-first and breadth-first
 - Solving the 0-1 knapsack problem (recursively vs. memoized)
+- Inserting items into a priority queue
 - Sorting integers (with various algorithms)
 
-## Installing it locally
+An interesting observation about these performance plots is that they do not always illustrate the big O time complexity of the underlying algorithms the way you would expect. Often times the sample size is too small for big O to really kick in; at small sample sizes the platform, coefficients and overhead can make up the bulk of the running time.
+
+## Installing and running it locally
 
 Clone the repo:
 
@@ -94,7 +100,7 @@ Clone the repo:
 git clone https://github.com/wobedi/algorithms-and-data-structures.git
 ```
 
-Then run the following commands in your terminal from the project root folder:
+Then run the following commands in your terminal from the project root folder to install it:
 
 ```bash
 pip3 install virtualenv
@@ -103,4 +109,19 @@ source env/bin/activate
 
 pip3 install -e .
 pip3 install -r requirements.txt
+```
+
+You can run unit tests for any implementation by navigating to its folder and then running it as a python module:
+
+```bash
+cd src/implementations/symbol_tables
+python3 hash_map_w_chaining.py
+```
+
+Likewise, you can generate performance plots like so:
+
+```bash
+# adjust the sample size in src/perf_plots/config.py
+cd src/perf_plots
+python3 fibonacci.py
 ```
