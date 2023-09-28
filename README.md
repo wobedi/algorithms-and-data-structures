@@ -1,3 +1,5 @@
+> Looking at this repo in 2023? Note that I coded this in 2020 and have been working mostly in TypeScript since then - the result: https://www.bilateralstimulation.io/about
+
 # Data Structures and Algorithms
 
 > Implementations and performance plots for fundamental data structures and algorithms
